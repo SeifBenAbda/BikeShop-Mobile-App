@@ -1,0 +1,17 @@
+icons_launcher:
+  image_path: "assets/images/ic_launcher.png"
+  platforms:
+    android:
+      enable: true
+      image_path: "assets/images/ic_launcher_adaptive_fore.png"
+      adaptive_background_color: '#ffffff'
+      #adaptive_background_image: "assets/images/universsoft_logo_white_adaptive_back.png"
+      adaptive_foreground_image: "assets/images/ic_launcher_adaptive_fore.png"
+    ios:
+      enable: true
+      image_path: "assets/images/ic_launcher_adaptive_fore.png"
+      adaptive_background_color: '#ffffff'
+      #adaptive_background_image: "assets/images/universsoft_logo_white_adaptive_back.png"
+      adaptive_foreground_image: "assets/images/ic_launcher_adaptive_fore.png"
+    web:
+      enable: false

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-const Color bgColor = Color(0xFF121213);
+import '../Global Folder/global_deco.dart';
+
 final ThemeData theme = ThemeData(
     useMaterial3: true,
     appBarTheme: const AppBarTheme(

@@ -1,12 +1,16 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'routes/route_names.dart';
 import 'routes/routes.dart';
 import 'services/superbase_service.dart';
+import 'utils/Global Folder/global_deco.dart';
 import 'utils/storage/storage.dart';
 import 'utils/theme/theme.dart';
 
@@ -33,6 +37,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      locale: const Locale('de'), // Set the default locale to German
+      localizationsDelegates: [
+        FlutterI18nDelegate(
+          translationLoader: FileTranslationLoader(
+            fallbackFile: 'de',
+            basePath: 'assets/i18n',
+          ),
+        ),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('de'),
+        Locale('en'),
+      ],
       debugShowCheckedModeBanner: false,
       title: 'BIKE HCI',
       theme: theme,
@@ -44,3 +63,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
+  }
+}

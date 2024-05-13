@@ -1,4 +1,5 @@
 // * Get Supabase s3 bucket url
+import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:bikeshop/utils/env.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,11 +14,11 @@ void showSnackBar(String title, String message) {
     title,
     message,
     snackPosition: SnackPosition.BOTTOM,
-    backgroundColor: const Color(0xFF121213),
-    colorText: Colors.white,
+    backgroundColor: Colors.white,
+    colorText: bgColor,
     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
     snackStyle: SnackStyle.GROUNDED,
-    margin: const EdgeInsets.all(0.0),
+    margin: const EdgeInsets.all(10.0),
   );
 }
 

@@ -39,8 +39,13 @@ dependencies:
   get: ^4.6.6
   get_storage: ^2.1.1
   flutter_dotenv: ^5.1.0
-  jiffy: ^6.3.0
+  jiffy: ^6.2.1
   form_validator: ^2.1.1
+  icons_launcher: ^2.1.7
+  flutter_native_splash: ^2.2.16
+  google_fonts: ^4.0.4
+  flutter_i18n: ^0.35.1
+  flutter_localization: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -65,8 +70,28 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/i18n/en.json
+    - assets/i18n/de.json
+    - assets/images/app_logo.png
+    - assets/images/worker.png
+    - assets/images/ic_launcher_background.png
+    - assets/images/ic_launcher_foreground.png
+
+
+    - assets/images/brake.png
+    - assets/images/chain.png
+    - assets/images/change_wheel.png
+    - assets/images/fix_wheel.png
+    - assets/images/front_bike.png
+    - assets/images/germany.png
+    - assets/images/usa.png
+    - assets/images/on_repair.png
+    - assets/images/pedal.png
+    - assets/images/pump.png
+    - assets/images/stem.png
+    - assets/images/under-repair.png
+    - assets/images/home_logo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

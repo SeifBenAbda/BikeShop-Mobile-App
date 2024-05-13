@@ -1,0 +1,15 @@
+{
+  "login": "Anmelden",
+  "email": "E-Mail",
+  "password": "Passwort",
+  "loginButton": "Anmelden",
+  "signup": "Registrieren",
+  "confirmPassword": "Passwort bestätigen",
+  "signupButton": "Registrieren",
+  "bikeShop": "Fahrradgeschäft",
+  "processing": "Bearbeitung",
+  "enterPassword": "Geben Sie Ihr Passwort ein",
+  "dontHaveAccount": "Sie haben noch kein Konto?",
+  "enterEmail": "Geben Sie Ihre E-Mail-Adresse ein",
+  "alreadyHaveAccount": "Bereits ein Konto?"
+}

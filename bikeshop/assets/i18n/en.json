@@ -1,0 +1,15 @@
+{
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "loginButton": "Login",
+  "signup": "Sign Up",
+  "confirmPassword": "Confirm Password",
+  "signupButton": "Sign Up",
+  "bikeShop": "Bike Shop",
+  "processing": "Processing",
+  "enterPassword": "Enter your password",
+  "dontHaveAccount": "Don't have an account?",
+  "enterEmail": "Enter your email",
+  "alreadyHaveAccount": "Already have an account?"
+}

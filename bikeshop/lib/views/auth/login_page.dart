@@ -1,13 +1,16 @@
-import 'package:bikeshop/utils/theme/theme.dart';
+import 'dart:ffi';
+
+import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:form_validator/form_validator.dart';
-import 'package:get/get.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
-import '../../controller/auth_controller.dart';
-import '../../routes/route_names.dart';
-import '../../utils/styles/authButton_style.dart';
-import '../../widgets/auth_input.dart';
+import '../../main.dart';
+import '../../utils/Global Folder/glaobal_vars.dart';
+import 'login_register_controller.dart';
+import 'register_login_fields.dart';
+
+var isLoginScreen = ValueNotifier(true);
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,12 +20,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController(text: "");
-  final TextEditingController passwordController =
-      TextEditingController(text: "");
-  final AuthController controller = Get.put(AuthController());
-  final GlobalKey<FormState> _form = GlobalKey<FormState>();
-
   @override
   void initState() {
     // TODO: implement initState
@@ -31,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() {
-    if (_form.currentState!.validate()) {
+    if (form.currentState!.validate()) {
       if (!controller.loginLoading.value) {
         controller.login(emailController.text, passwordController.text);
       }
@@ -49,84 +46,182 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgColor,
-      body: SafeArea(
-          child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(15.0),
-          child: Form(
-            key: _form,
-            child: Column(
-              children: [
-                //image here
-                const SizedBox(
-                  height: 10,
-                ),
-                const Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Login",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
+      body: Form(
+        key: form,
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              changeLangueWidget(),
+              const SizedBox(
+                height: 50,
+              ),
+              bikeShopLogoAndText(),
+              const SizedBox(
+                height: 30,
+              ),
+              Expanded(
+                child: ScrollConfiguration(
+                  behavior: MyBehavior(),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        //topWidgetText(),
+
+                        const LoginRegisterFields(),
+                        const SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      Text("Welcome back,"),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                AuthInput(
-                  hintText: "Enter your email",
-                  label: "Email",
-                  controller: emailController,
-                  callback: ValidationBuilder().email().build(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                AuthInput(
-                  hintText: "Enter your password",
-                  label: "Password",
-                  controller: passwordController,
-                  isPasswordField: true,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Obx(
-                  () => ElevatedButton(
-                    style: authButtonStyle(
-                      controller.loginLoading.value
-                          ? Colors.white.withOpacity(0.6)
-                          : Colors.white,
-                      Colors.black,
+                        loginRegisterArea(),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    onPressed: login,
-                    child: Text(controller.loginLoading.value
-                        ? "Processing..."
-                        : "Submit"),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Text.rich(TextSpan(children: [
-                  TextSpan(
-                      text: " Sign up",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => Get.toNamed(RouteNames.register)),
-                ], text: "Don't have an account ?"))
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      )),
+      ),
     );
+  }
+
+  Widget loginRegisterArea() {
+    return ValueListenableBuilder(
+        valueListenable: isLoginScreen,
+        builder: (context, value, _) {
+          return Column(
+            children: [
+              loginRegisterButton(),
+              const SizedBox(
+                height: 10,
+              ),
+              loginRegisterText()
+            ],
+          );
+        });
+  }
+
+  Widget loginRegisterText() {
+    return ValueListenableBuilder(
+        valueListenable: isLoginScreen,
+        builder: (context, value, _) {
+          String buttonText = isLoginScreen.value ? "signup" : "login";
+          String buttonTextRich =
+              isLoginScreen.value ? "dontHaveAccount" : "alreadyHaveAccount";
+          return Text.rich(TextSpan(children: [
+            TextSpan(
+                text: " ${FlutterI18n.translate(context, buttonText)}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    setState(() {
+                      isLoginScreen.value = !isLoginScreen.value;
+                    });
+                  }),
+          ], text: FlutterI18n.translate(context, buttonTextRich)));
+        });
+  }
+
+  Widget loginRegisterButton() {
+    String buttonText = isLoginScreen.value ? "loginButton" : "signupButton";
+    return GestureDetector(
+      onTap: () {
+        if (isLoginScreen.value) {
+          login();
+        }
+      },
+      child: Container(
+        height: 40,
+        width: MediaQuery.of(context).size.width / 1.2,
+        decoration: getBoxDeco(10, Colors.white),
+        child: Center(
+          child: Text(
+            controller.loginLoading.value || controller.registerLoading.value
+                ? "${FlutterI18n.translate(context, "processing")}..."
+                : FlutterI18n.translate(context, buttonText),
+            style: getTextStyleFjallone(17, bgColor),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget bikeShopLogoAndText() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.1,
+      child: Column(
+        children: [
+          Image.asset("assets/images/home_logo.png", height: 100, width: 100),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 1.1,
+            child: Center(
+              child: Text(
+                "BIKE SHOP",
+                style: getTextStyleWhiteFjallone(25),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget changeLangueWidget() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          languageFlag("en"),
+          const SizedBox(
+            width: 10,
+          ),
+          languageFlag("de")
+        ],
+      ),
+    );
+  }
+
+  Widget languageFlag(String language) {
+    return GestureDetector(
+      onTap: () {
+        if (language == "en") {
+          changeLanguage("en");
+        } else {
+          changeLanguage("de");
+        }
+      },
+      child: SizedBox(
+        child: Image.asset(
+          language == "en"
+              ? "assets/images/usa.png"
+              : "assets/images/germany.png",
+          height: 35,
+          width: 35,
+        ),
+      ),
+    );
+  }
+
+  void changeLanguage(String language) {
+    Locale newLocale =
+        language == "en" ? const Locale('en') : const Locale('de');
+    // Set the new locale
+    setState(() {
+      FlutterI18n.refresh(context, newLocale);
+      currentFallBackFile.value = language;
+    });
+  }
+
+  Widget topWidgetText() {
+    String buttonText = isLoginScreen.value ? "login" : "signup";
+    return Text(FlutterI18n.translate(context, buttonText),
+        style: getTextStyleWhiteFjallone(25));
   }
 }
