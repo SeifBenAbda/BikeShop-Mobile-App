@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +18,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print("heyy");
-  }
+  var _isKeyboardOpen = ValueNotifier(false);
 
   void login() {
     if (form.currentState!.validate()) {
@@ -44,47 +37,59 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    _isKeyboardOpen.value = isKeyboardOpen(context);
     return Scaffold(
       backgroundColor: bgColor,
-      body: Form(
-        key: form,
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              changeLangueWidget(),
-              const SizedBox(
-                height: 50,
-              ),
-              bikeShopLogoAndText(),
-              const SizedBox(
-                height: 30,
-              ),
-              Expanded(
-                child: ScrollConfiguration(
-                  behavior: MyBehavior(),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        //topWidgetText(),
+      body: Stack(children: [
+        Form(
+          key: form,
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                bikeShopLogoAndText(),
+                const SizedBox(
+                  height: 30,
+                ),
+                Expanded(
+                  child: ScrollConfiguration(
+                    behavior: MyBehavior(),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          //topWidgetText(),
 
-                        const LoginRegisterFields(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        loginRegisterArea(),
-                        const SizedBox(height: 20),
-                      ],
+                          const LoginRegisterFields(),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          loginRegisterArea(),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+        ValueListenableBuilder(
+            valueListenable: _isKeyboardOpen,
+            builder: (context, value, _) {
+              return Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Visibility(
+                  visible: !_isKeyboardOpen.value,
+                  child: changeLangueWidget(),
+                ),
+              );
+            })
+      ]),
     );
   }
 
@@ -173,17 +178,20 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget changeLangueWidget() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.1,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          languageFlag("en"),
-          const SizedBox(
-            width: 10,
-          ),
-          languageFlag("de")
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom:16.0),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width / 1.1,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            languageFlag("en"),
+            const SizedBox(
+              width: 10,
+            ),
+            languageFlag("de")
+          ],
+        ),
       ),
     );
   }
@@ -209,6 +217,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget topWidgetText() {
+    String buttonText = isLoginScreen.value ? "login" : "signup";
+    return Text(FlutterI18n.translate(context, buttonText),
+        style: getTextStyleWhiteFjallone(25));
+  }
+
   void changeLanguage(String language) {
     Locale newLocale =
         language == "en" ? const Locale('en') : const Locale('de');
@@ -219,9 +233,8 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Widget topWidgetText() {
-    String buttonText = isLoginScreen.value ? "login" : "signup";
-    return Text(FlutterI18n.translate(context, buttonText),
-        style: getTextStyleWhiteFjallone(25));
+  bool isKeyboardOpen(BuildContext context) {
+    final double viewInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
+    return viewInsetsBottom > 0;
   }
 }

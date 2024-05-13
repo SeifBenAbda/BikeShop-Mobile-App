@@ -24,7 +24,7 @@ void main() async{
     systemNavigationBarColor: bgColor, // navigation bar color
     statusBarColor: bgColor, // status bar color
   ));
-  //await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
   await GetStorage.init();
   Get.put(SupabaseService());
   runApp(const MyApp());
