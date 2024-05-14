@@ -8,13 +8,14 @@ class AuthInput extends StatelessWidget {
   final TextEditingController controller;
   final bool isPasswordField;
   final ValidatorCallback? callback;
+  final double fieldWidth;
   const AuthInput({
     required this.hintText,
     required this.label,
     required this.controller,
     this.callback,
-    this.isPasswordField = false,
-    super.key,
+    required this.isPasswordField,
+    super.key, required this.fieldWidth,
   });
 
   @override
@@ -22,19 +23,22 @@ class AuthInput extends StatelessWidget {
     return Column(
       children: [
         inputHint(context),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         Container(
           decoration: getBoxDeco(10, optionConColor),
           //height: payementTextFieldHeight,
-          width: MediaQuery.of(context).size.width / 1.2,
+          width: fieldWidth,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: TextFormField(
               minLines: 1,
-              maxLines: null,
+              maxLines: isPasswordField?1:null,
               keyboardType: TextInputType.text,
               controller: controller,
               autofocus: false,
+              obscureText: isPasswordField,
               style: getTextStyleWhiteFjallone(15),
               cursorColor: cursorTextFieldColor3,
               decoration: InputDecoration(
@@ -61,8 +65,11 @@ class AuthInput extends StatelessWidget {
 
   Widget inputHint(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width/1.2 - 10,
-      child: Text(label,style: getTextStyleWhiteFjallone(15),),
+      width: fieldWidth - 10,
+      child: Text(
+        label,
+        style: getTextStyleWhiteFjallone(15),
+      ),
     );
   }
 }

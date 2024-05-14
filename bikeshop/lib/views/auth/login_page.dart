@@ -18,7 +18,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var _isKeyboardOpen = ValueNotifier(false);
+  final _isKeyboardOpen = ValueNotifier(false);
 
   void login() {
     if (form.currentState!.validate()) {
@@ -28,12 +28,16 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
+  void signup() {
+    print("hey");
+    if (form.currentState!.validate()) {
+      if (!controller.loginLoading.value) {
+        controller.register(emailController.text, passwordController.text);
+      }
+    }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +142,8 @@ class _LoginPageState extends State<LoginPage> {
       onTap: () {
         if (isLoginScreen.value) {
           login();
+        } else {
+          signup();
         }
       },
       child: Container(
@@ -179,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget changeLangueWidget() {
     return Padding(
-      padding: const EdgeInsets.only(bottom:16.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: SizedBox(
         width: MediaQuery.of(context).size.width / 1.1,
         child: Row(

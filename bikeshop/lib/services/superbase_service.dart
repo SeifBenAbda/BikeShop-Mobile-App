@@ -4,7 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utils/env.dart';
 import '../utils/storage/storage.dart';
 
-
 class SupabaseService extends GetxService {
   Rx<User?> currentUser = Rx<User?>(null);
 
@@ -24,6 +23,10 @@ class SupabaseService extends GetxService {
   void updateUserfromSession() {
     var session = Session.fromJson(Storage.userSession!);
     currentUser.value = session?.user;
+  }
+
+  SupabaseClient getSuperbaseClient() {
+    return client;
   }
 
   // *  listen auth changes

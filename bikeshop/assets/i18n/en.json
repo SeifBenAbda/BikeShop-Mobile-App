@@ -11,5 +11,8 @@
   "enterPassword": "Enter your password",
   "dontHaveAccount": "Don't have an account?",
   "enterEmail": "Enter your email",
-  "alreadyHaveAccount": "Already have an account?"
+  "alreadyHaveAccount": "Already have an account?",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "dateOfBirth": "Date of Birth"
 }
