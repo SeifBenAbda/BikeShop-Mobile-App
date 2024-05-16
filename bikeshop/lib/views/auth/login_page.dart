@@ -1,10 +1,13 @@
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
+import 'package:bikeshop/utils/Global%20Folder/global_func.dart';
+import 'package:bikeshop/utils/device_checker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 
 import '../../main.dart';
 import '../../utils/Global Folder/glaobal_vars.dart';
+import '../../widgets/loading_widget.dart';
 import 'login_register_controller.dart';
 import 'register_login_fields.dart';
 
@@ -29,71 +32,83 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void signup() {
-    print("hey");
     if (form.currentState!.validate()) {
-      if (!controller.loginLoading.value) {
-        controller.register(emailController.text, passwordController.text);
+      if (!controller.registerLoading.value) {
+        if (passwordsMatching()) {
+          controller.register(
+              emailController.text, passwordController.text, true);
+        } else {
+          showErrorLogin(context, getText(context, "passMatch"));
+        }
       }
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
     _isKeyboardOpen.value = isKeyboardOpen(context);
     return Scaffold(
       backgroundColor: bgColor,
-      body: Stack(children: [
-        Form(
-          key: form,
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                bikeShopLogoAndText(),
-                const SizedBox(
-                  height: 30,
-                ),
-                Expanded(
-                  child: ScrollConfiguration(
-                    behavior: MyBehavior(),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          //topWidgetText(),
+      body: Center(
+        child: SizedBox(
+          width: myDeviceType.value == DeviceType.Laptop
+              ? MediaQuery.of(context).size.width / 3.5
+              : MediaQuery.of(context).size.width,
+          child: Stack(children: [
+            Form(
+              key: form,
+              child: Center(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    bikeShopLogoAndText(),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(
+                      child: ScrollConfiguration(
+                        behavior: MyBehavior(),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              //topWidgetText(),
 
-                          const LoginRegisterFields(),
-                          const SizedBox(
-                            height: 20,
+                              const LoginRegisterFields(),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              loginRegisterArea(),
+                              const SizedBox(height: 20),
+                            ],
                           ),
-                          loginRegisterArea(),
-                          const SizedBox(height: 20),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+            ValueListenableBuilder(
+                valueListenable: _isKeyboardOpen,
+                builder: (context, value, _) {
+                  return Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Visibility(
+                      visible: !_isKeyboardOpen.value,
+                      child: changeLangueWidget(),
+                    ),
+                  );
+                }),
+            loadingWidget(isLoginScreen.value
+                ? controller.loginLoading
+                : controller.registerLoading)
+          ]),
         ),
-        ValueListenableBuilder(
-            valueListenable: _isKeyboardOpen,
-            builder: (context, value, _) {
-              return Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Visibility(
-                  visible: !_isKeyboardOpen.value,
-                  child: changeLangueWidget(),
-                ),
-              );
-            })
-      ]),
+      ),
     );
   }
 
@@ -203,21 +218,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget languageFlag(String language) {
-    return GestureDetector(
-      onTap: () {
-        if (language == "en") {
-          changeLanguage("en");
-        } else {
-          changeLanguage("de");
-        }
-      },
-      child: SizedBox(
-        child: Image.asset(
-          language == "en"
-              ? "assets/images/usa.png"
-              : "assets/images/germany.png",
-          height: 35,
-          width: 35,
+    return MouseRegion (
+      cursor:SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          if (language == "en") {
+            changeLanguage("en");
+          } else {
+            changeLanguage("de");
+          }
+        },
+        child: SizedBox(
+          child: Image.asset(
+            language == "en"
+                ? "assets/images/usa.png"
+                : "assets/images/germany.png",
+            height: 35,
+            width: 35,
+          ),
         ),
       ),
     );
@@ -229,12 +247,12 @@ class _LoginPageState extends State<LoginPage> {
         style: getTextStyleWhiteFjallone(25));
   }
 
-  void changeLanguage(String language) {
+  void changeLanguage(String language) async {
     Locale newLocale =
         language == "en" ? const Locale('en') : const Locale('de');
     // Set the new locale
-    setState(() {
-      FlutterI18n.refresh(context, newLocale);
+    setState(() async {
+      await FlutterI18n.refresh(context, newLocale);
       currentFallBackFile.value = language;
     });
   }
@@ -242,5 +260,9 @@ class _LoginPageState extends State<LoginPage> {
   bool isKeyboardOpen(BuildContext context) {
     final double viewInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
     return viewInsetsBottom > 0;
+  }
+
+  bool passwordsMatching() {
+    return passwordController.text == repeatPasswordController.text;
   }
 }

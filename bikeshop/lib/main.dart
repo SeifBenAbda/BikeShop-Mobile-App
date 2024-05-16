@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:bikeshop/services/providers/shopServices_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,14 +8,17 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'routes/route_names.dart';
 import 'routes/routes.dart';
+import 'services/providers/connectitvity_provider.dart';
 import 'services/superbase_service.dart';
 import 'utils/Global Folder/global_deco.dart';
+import 'utils/device_checker.dart';
 import 'utils/storage/storage.dart';
 import 'utils/theme/theme.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     //SystemUiOverlay.bottom, //This line is used for showing the bottom bar
@@ -27,7 +31,14 @@ void main() async{
   await dotenv.load(fileName: ".env");
   await GetStorage.init();
   Get.put(SupabaseService());
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<ConnectivityProvider>(
+      create: (context) => ConnectivityProvider(),
+    ),
+    ChangeNotifierProvider<ShopServiceProvider>(
+      create: (context) => ShopServiceProvider(),
+    ),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -36,6 +47,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    DeviceType deviceType = DeviceDetector.getDeviceType(context);
+
+    myDeviceType.value = deviceType;
     return GetMaterialApp(
       locale: const Locale('de'), // Set the default locale to German
       localizationsDelegates: [

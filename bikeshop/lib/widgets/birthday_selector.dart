@@ -73,12 +73,12 @@ class _DateBirthDaySelectorState extends State<DateBirthDaySelector> {
       },
       child: Container(
         height: 30,
-        decoration: getBoxDeco(5, blueColor),
+        decoration: getBoxDeco(5, greyColor),
         width: 30,
         child: const Icon(
           Icons.edit_calendar_outlined,
           size: 16,
-          color: Colors.white,
+          color: blueColor,
         ),
       ),
     );

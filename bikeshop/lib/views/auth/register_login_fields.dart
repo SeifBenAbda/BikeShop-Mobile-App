@@ -4,6 +4,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:form_validator/form_validator.dart';
 
 import '../../utils/Global Folder/glaobal_vars.dart';
+import '../../utils/device_checker.dart';
 import '../../widgets/auth_input.dart';
 import '../../widgets/birthday_selector.dart';
 import 'login_register_controller.dart';
@@ -107,7 +108,8 @@ class _LoginRegisterFieldsState extends State<LoginRegisterFields> {
 
   Widget firstAndLastNameWidget() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.2,
+       width: myDeviceType.value==DeviceType.Laptop?
+          MediaQuery.of(context).size.width/3.5: MediaQuery.of(context).size.width/1.2,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -116,14 +118,16 @@ class _LoginRegisterFieldsState extends State<LoginRegisterFields> {
             label: FlutterI18n.translate(context, "firstName"),
             controller: firstNameController,
             isPasswordField: false,
-            fieldWidth: MediaQuery.of(context).size.width / 2.5,
+            fieldWidth: myDeviceType.value==DeviceType.Laptop?
+          MediaQuery.of(context).size.width/7.5: MediaQuery.of(context).size.width/2.5,
           ),
           AuthInput(
             hintText: FlutterI18n.translate(context, "lastName"),
             label: FlutterI18n.translate(context, "lastName"),
             controller: lastNameController,
             isPasswordField: false,
-            fieldWidth: MediaQuery.of(context).size.width / 2.5,
+            fieldWidth: myDeviceType.value==DeviceType.Laptop?
+          MediaQuery.of(context).size.width/7.5: MediaQuery.of(context).size.width/2.5,
           ),
         ],
       ),

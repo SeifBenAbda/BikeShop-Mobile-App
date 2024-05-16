@@ -14,5 +14,25 @@
   "alreadyHaveAccount": "Bereits ein Konto?",
   "firstName": "Vorname",
   "lastName": "Nachname",
-  "dateOfBirth": "Geburtsdatum"
+  "dateOfBirth": "Geburtsdatum",
+  "activateInternet": "Bitte aktivieren Sie Ihr Internet",
+  "hello": "Hallo",
+  "orders": "Bestellungen",
+  "home": "Startseite",
+  "profile": "Profil",
+  "ourServices": "Unsere Dienstleistungen",
+  "basicTuneUp": "Grundlegende Wartung",
+  "buySellBicycles": "Fahrräder kaufen & verkaufen",
+  "fixYourBicycle": "Repariere dein Fahrrad",
+  "buyAccessories": "Accessoires kaufen",
+  "repairDesc": "Professionelle Fahrradreparatur- und Wartungsdienstleistungen.",
+  "acceDesc": "Entdecken Sie unser Sortiment an Fahrradzubehör und Ausrüstung.",
+  "buySellDesc": "Durchsuchen Sie unsere Sammlung von neuen und gebrauchten Fahrrädern zum Verkauf.",
+  "orderTrack": "Verfolgen Sie Ihre Bestellung",
+  "buyNow": "Jetzt kaufen",
+  "fixNow": "Jetzt reparieren",
+  "discoverNow": "Jetzt entdecken",
+  "serviceUnavailable": "Dienst ist nicht verfügbar",
+  "passMatch": "Passwörter stimmen nicht überein"
+
 }

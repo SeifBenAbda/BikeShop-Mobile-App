@@ -14,5 +14,26 @@
   "alreadyHaveAccount": "Already have an account?",
   "firstName": "First Name",
   "lastName": "Last Name",
-  "dateOfBirth": "Date of Birth"
+  "dateOfBirth": "Date of Birth",
+  "activateInternet": "Activate your internet please",
+  "hello": "Hello",
+  "orders": "Orders",
+  "home": "Home",
+  "profile": "Profile",
+  "ourServices": "Our Services",
+  "basicTuneUp": "Basic Tune-Up",
+  "buySellBicycles": "Buy & Sell Bicycles",
+  "fixYourBicycle": "Fix your Bicycle",
+  "buyAccessories": "Buy Accessories",
+  "repairDesc": "Professional bicycle repair and maintenance services.",
+  "acceDesc": "Explore our range of bicycle accessories and gear.",
+  "buySellDesc": "Browse our collection of new and used bicycles for sale.",
+  "orderTrack": "Track your order",
+  "buyNow": "Buy Now",
+  "fixNow": "Fix Now",
+  "discoverNow": "Discover now",
+  "serviceUnavailable": "Service Is Unavailable",
+  "passMatch": "Passwords are not matching"
+
+
 }

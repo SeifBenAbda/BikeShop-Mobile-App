@@ -46,7 +46,12 @@ dependencies:
   google_fonts: ^4.0.4
   flutter_i18n: ^0.35.1
   flutter_localization: ^0.2.0
-
+  shared_preferences: ^2.2.3
+  provider: ^5.0.0
+  rive_animated_icon: ^1.0.2
+  auto_size_text: ^3.0.0
+  toastification: ^2.0.0
+  internet_connection_checker: ^1.0.0+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -93,6 +98,19 @@ flutter:
     - assets/images/stem.png
     - assets/images/under-repair.png
     - assets/images/home_logo.png
+    - assets/images/no-internet.png
+    - assets/images/user_avatar.png
+    - assets/images/buy-and-sell.png
+    - assets/images/accessories.png
+    - assets/images/tools.png
+    - assets/images/accept.png
+    - assets/images/warning.png
+    - assets/images/basic_repair.png
+    - assets/images/tire.png
+    - assets/images/cleaning.png
+    - assets/images/duration.png
+    - assets/images/price.png
+    - assets/images/discount.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

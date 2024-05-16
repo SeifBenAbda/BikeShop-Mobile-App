@@ -1,5 +1,7 @@
 import 'package:bikeshop/views/auth/login_register_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../routes/route_names.dart';
@@ -10,28 +12,30 @@ import '../utils/storage/storage_key.dart';
 import '../widgets/birthday_selector.dart';
 
 class AuthController extends GetxController {
-  final registerLoading = false.obs;
-  final loginLoading = false.obs;
+  final registerLoading = ValueNotifier(false);
+  final loginLoading = ValueNotifier(false);
 
   // * Register Method
-  Future<void> register(String email, String password) async {
+  Future<void> register(String email, String password, bool isClient) async {
+    SharedPreferences localPreferences = await SharedPreferences.getInstance();
     Map<String, dynamic> registerData = {
       "email": emailController.text,
       "first_name": firstNameController.text,
       "last_name": lastNameController.text,
       "birthdate": birthDayDate.value.toString(),
       "credits": "0.0",
+      "isClient": isClient.toString()
     };
     registerLoading.value = true;
     try {
       final AuthResponse response = await SupabaseService.client.auth
           .signUp(email: email, password: password, data: registerData);
-      print(registerData);
       registerLoading.value = false;
 
       if (response.user != null) {
         Storage.session.write(StorageKey.session, response.session!.toJson());
-        //Get.offAllNamed(RouteNames.home);
+        StorageLocal().setIsUserClient(true, localPreferences);
+        Get.offAllNamed(RouteNames.home);
       } else {
         showSnackBar("Error", "Something went wrong");
       }
