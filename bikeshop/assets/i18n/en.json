@@ -33,7 +33,16 @@
   "fixNow": "Fix Now",
   "discoverNow": "Discover now",
   "serviceUnavailable": "Service Is Unavailable",
-  "passMatch": "Passwords are not matching"
+  "passMatch": "Passwords are not matching",
+  "service": "Service",
+  "addedToBasket": "is added to Your Basket",
+  "delete": "Delete",
+  "remove": "Remove",
+  "totalPrice": "Total Price",
+  "totalDiscount": "Total Discount",
+  "timeToTake": "Time to take",
+  "proceedToPayment": "Proceed to Payment",
+  "basketIsEmpty": "Basket is Empty"
 
 
 }

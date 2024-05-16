@@ -1,10 +1,13 @@
 import 'package:bikeshop/services/providers/shopServices_provider.dart';
 import 'package:bikeshop/utils/Global%20Folder/global_func.dart';
+import 'package:bikeshop/views/client/Fix%20Bicycle/Fix%20Bike%20Basket/basket_page.dart';
 import 'package:bikeshop/views/client/Fix%20Bicycle/shopServices_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/Global Folder/global_deco.dart';
+import '../../../widgets/goBack_Btn.dart';
+import 'fix_bike_func.dart';
 import 'fix_bike_vars.dart';
 
 class FixBikePage extends StatefulWidget {
@@ -16,6 +19,14 @@ class FixBikePage extends StatefulWidget {
 
 class _FixBikePageState extends State<FixBikePage> {
   bool isReady = false;
+
+  @override
+  void initState() {
+    initiateBasket();
+    numberOfItemsBasket.value = 0;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -23,13 +34,20 @@ class _FixBikePageState extends State<FixBikePage> {
         child: Column(
           children: [
             const SizedBox(
-              height: 10,
+              height: 30,
             ),
             topContainerFixBike(),
             const SizedBox(
-              height: 15,
+              height: 10,
             ),
-            Expanded(child: mainFixBikeWidget())
+            ValueListenableBuilder(
+                valueListenable: isBasketBikeFixActive,
+                builder: (context, value, _) {
+                  if (isBasketBikeFixActive.value) {
+                    return const BasketPage();
+                  }
+                  return Expanded(child: mainFixBikeWidget());
+                })
           ],
         ));
   }
@@ -43,7 +61,9 @@ class _FixBikePageState extends State<FixBikePage> {
           const SizedBox(
             width: 10,
           ),
-          goBackBtnTop(),
+          GoBackButton(
+            callBack: fixBikeReturnFunc,
+          ),
           Expanded(
             child: Align(
               alignment: Alignment.center,
@@ -63,30 +83,25 @@ class _FixBikePageState extends State<FixBikePage> {
   }
 
   Widget basketWidget() {
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: getBoxDeco(15, greyColor),
-      child: const Center(
-        child: Icon(
-          Icons.shopping_cart_outlined,
-          color: bgColor,
-          size: 30,
-        ),
-      ),
-    );
-  }
-
-  Widget goBackBtnTop() {
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: getBoxDeco(15, greyColor),
-      child: const Center(
-        child: Icon(
-          Icons.arrow_back_ios_new_outlined,
-          color: bgColor,
-          size: 30,
+    return InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      onTap: () {
+        setState(() {
+          isBasketBikeFixActive.value = true;
+        });
+      },
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: getBoxDeco(15, greyColor),
+        child: const Center(
+          child: Icon(
+            Icons.shopping_cart_outlined,
+            color: bgColor,
+            size: 30,
+          ),
         ),
       ),
     );
@@ -96,6 +111,8 @@ class _FixBikePageState extends State<FixBikePage> {
     final shopServiceProvider =
         Provider.of<ShopServiceProvider>(context, listen: true);
     shopServiceProvider.getShopServices().then((value) {
+      isReady = true;
+    }).onError((error, stackTrace) {
       isReady = true;
     });
     if (!isReady) {
@@ -123,5 +140,20 @@ class _FixBikePageState extends State<FixBikePage> {
         listOfShopServices: listOfShopServices,
       );
     });
+  }
+
+  //---Functions that manipulate state
+  void goBackFromBasket() {
+    setState(() {
+      isBasketBikeFixActive.value = false;
+    });
+  }
+
+  void fixBikeReturnFunc() {
+    if (isBasketBikeFixActive.value) {
+      goBackFromBasket();
+    } else {
+      goHomePageClient();
+    }
   }
 }

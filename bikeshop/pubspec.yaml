@@ -111,6 +111,7 @@ flutter:
     - assets/images/duration.png
     - assets/images/price.png
     - assets/images/discount.png
+    - assets/images/emptyCart.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

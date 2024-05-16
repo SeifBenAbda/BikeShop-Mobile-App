@@ -61,6 +61,14 @@ BoxDecoration getBoxDeco(double radius, Color color) {
       color: color);
 }
 
+
+BoxDecoration getSepeatorDeco(double radius, Color color) {
+  return BoxDecoration(
+      border: Border.all(color: color),
+      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radius) ,bottomRight: Radius.circular(radius)),
+      color: color);
+}
+
 BoxDecoration getBoxDecoShadowed(double radius, Color color) {
   return BoxDecoration(
       border: Border.all(color: color),

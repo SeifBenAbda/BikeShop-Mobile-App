@@ -9,18 +9,21 @@ class ShopService {
   final Duration serviceDuration;
   final ValueNotifier isServiceAvailable;
   final ValueNotifier serviceDiscount;
-  final ValueNotifier activeClientsOnService; //check if there is surchage on Service
+  final ValueNotifier
+      activeClientsOnService; //check if there is surchage on Service
 
-  ShopService(
-    {
+  final ValueNotifier isInBasket;
+
+  ShopService({
     required this.serviceId,
     required this.serviceName,
     required this.serviceNameGerman,
     required this.serviceImage,
     required this.servicePrice,
     required this.serviceDuration,
-    required this.isServiceAvailable, 
-    required this.serviceDiscount, 
-    required this.activeClientsOnService, 
+    required this.isServiceAvailable,
+    required this.serviceDiscount,
+    required this.activeClientsOnService,
+    required this.isInBasket,
   });
 }

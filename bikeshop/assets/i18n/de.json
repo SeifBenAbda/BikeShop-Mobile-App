@@ -33,6 +33,16 @@
   "fixNow": "Jetzt reparieren",
   "discoverNow": "Jetzt entdecken",
   "serviceUnavailable": "Dienst ist nicht verfügbar",
-  "passMatch": "Passwörter stimmen nicht überein"
+  "passMatch": "Passwörter stimmen nicht überein",
+  "service": "Dienst",
+  "addedToBasket": "wurde Ihrem Warenkorb hinzugefügt",
+  "delete": "Löschen",
+  "remove": "Entfernen",
+  "totalPrice": "Gesamtpreis",
+  "totalDiscount": "Gesamtrabatt",
+  "timeToTake": "Zeit bis zur Fertigstellung",
+  "proceedToPayment": "Zur Zahlung",
+  "basketIsEmpty": "Der Warenkorb ist leer"
+
 
 }

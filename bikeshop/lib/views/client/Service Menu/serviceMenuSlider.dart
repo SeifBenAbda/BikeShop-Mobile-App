@@ -37,7 +37,7 @@ class _ShopServiceSliderState extends State<ShopServiceSlider> {
   }
 
   void _startAutoSlide() {
-  _timer = Timer.periodic(const Duration(seconds: 6), (timer) {
+  _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
     if (_isSliding) {
       final currentIndex = (_scrollController.position.pixels / (MediaQuery.of(context).size.width / 1.4)).round();
       final nextIndex = (currentIndex + 1) % listClientServices.length;
