@@ -5,6 +5,7 @@ import 'package:bikeshop/views/client/Buy%20Accessories/accessories_page.dart';
 import 'package:bikeshop/views/client/Buy_Sell_Bicycles/buy_sell_page.dart';
 import 'package:bikeshop/views/client/Fix%20Bicycle/fix_bike_page.dart';
 import 'package:flutter/material.dart';
+import '../Profile/client_profile_page.dart';
 import '../Service Menu/serviceMenuSlider.dart';
 import 'bottom_nav_client.dart';
 import 'client_home_fun.dart';
@@ -21,7 +22,6 @@ class ClientHomePage extends StatefulWidget {
 class _ClientHomePageState extends State<ClientHomePage> {
   @override
   void initState() {
-    // TODO: implement initState
     WidgetsFlutterBinding.ensureInitialized();
     super.initState();
   }
@@ -47,6 +47,8 @@ class _ClientHomePageState extends State<ClientHomePage> {
         return const AccessoriesPage();
       case "BUYANDSELL":
         return const BuyAndSellPage();
+      case "C_PROFILE":
+        return const ClientProfilePage();  
       default:
         return homePageMain();
     }

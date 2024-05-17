@@ -113,7 +113,10 @@ class _BottomNavigationClientState extends State<BottomNavigationClient> {
   }
 
   void navigateClient(int optionIndex) {
-    if (clientHomeOptions.elementAt(optionIndex).optionQuickAcess == "H") {
+    String serviceQuickAccess = clientHomeOptions.elementAt(optionIndex).optionQuickAcess! ;
+    bool isHome = serviceQuickAccess == "H" ;
+    bool isProfile = serviceQuickAccess =="C_PROFILE" ;
+    if (isHome || isProfile) {
       setState(() {
         currentActiveScreenClient.value =
             clientHomeOptions.elementAt(optionIndex).optionQuickAcess!;

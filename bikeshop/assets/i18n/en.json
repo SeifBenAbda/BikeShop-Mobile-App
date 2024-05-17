@@ -42,7 +42,9 @@
   "totalDiscount": "Total Discount",
   "timeToTake": "Time to take",
   "proceedToPayment": "Proceed to Payment",
-  "basketIsEmpty": "Basket is Empty"
+  "basketIsEmpty": "Basket is Empty",
+  "myProfile": "My Profile"
+  
 
 
 }

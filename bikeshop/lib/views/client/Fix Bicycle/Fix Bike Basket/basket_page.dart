@@ -208,6 +208,7 @@ class _BasketPageState extends State<BasketPage> {
       totalAmountOrder.value -= servicePrice;
       currentOrder!.totalAmount.value = totalAmountOrder.value;
       numberOfItemsBasket.value--;
+      service.isInBasket.value = false;
     });
   }
 }
