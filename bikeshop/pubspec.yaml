@@ -52,6 +52,7 @@ dependencies:
   auto_size_text: ^3.0.0
   toastification: ^2.0.0
   internet_connection_checker: ^1.0.0+1
+  board_datetime_picker: ^1.6.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -112,6 +113,8 @@ flutter:
     - assets/images/price.png
     - assets/images/discount.png
     - assets/images/emptyCart.png
+    - assets/images/date.png
+    - assets/images/order.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

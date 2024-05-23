@@ -75,6 +75,7 @@ class AuthController extends GetxController {
       await SupabaseService.client.auth.signOut();
       Storage.session.write(StorageKey.session, null);
       print("signout");
+      Get.offAllNamed(RouteNames.login);
     } catch (error) {
       showSnackBar("Error", "Something went wrong.please try again.");
     }

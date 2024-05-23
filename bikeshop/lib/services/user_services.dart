@@ -29,7 +29,7 @@ class UserService {
       avatarUrl: userData['avatar_url'].toString(),
       email: userData['email'] as String,
       credits: userData['credits'],
-      isClient: userData['isclient'] as bool,
+      isClient: userData['isclient'] as bool, isAdmin: userData['isAdmin'] as bool,
     );
 
     return myUser;

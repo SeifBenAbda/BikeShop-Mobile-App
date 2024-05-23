@@ -43,8 +43,32 @@
   "timeToTake": "Time to take",
   "proceedToPayment": "Proceed to Payment",
   "basketIsEmpty": "Basket is Empty",
-  "myProfile": "My Profile"
-  
+  "myProfile": "My Profile",
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "now": "Now",
+  "year": "Year",
+  "day": "Day",
+  "month": "Month",
+  "minute": "Minute",
+  "hour": "Hour",
+  "appointmentDayTime": "Appointment Day and Time",
+  "myOrders": "My Orders",
+  "appointment": "Appointment",
+  "notStarted": "Not Started",
+  "started": "Started",
+  "completed": "Completed",
+  "canceled": "Canceled",
+  "logout": "Logout",
+  "openOrders": "Open Orders",
+  "orderId": "Order Id",
+  "addToMyTasks": "Add to my Tasks",
+  "todaysTasks": "Today's Tasks",
+  "startNow": "Start Now",
+  "services": "Services",
+  "orderDashboard": "Order Dashboard",
+  "searchOrder": "Search Order"
+
 
 
 }

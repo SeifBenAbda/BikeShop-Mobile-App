@@ -11,7 +11,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'routes/route_names.dart';
 import 'routes/routes.dart';
+import 'services/providers/clientOrders_provider.dart';
 import 'services/providers/connectitvity_provider.dart';
+import 'services/providers/order_providers.dart';
 import 'services/superbase_service.dart';
 import 'utils/Global Folder/global_deco.dart';
 import 'utils/device_checker.dart';
@@ -38,6 +40,22 @@ void main() async {
     ChangeNotifierProvider<ShopServiceProvider>(
       create: (context) => ShopServiceProvider(),
     ),
+     ChangeNotifierProvider<ClientOrdersProvider>(
+      create: (context) => ClientOrdersProvider(),
+    ),
+    ChangeNotifierProvider<OrdersProvider>(
+      create: (context) => OrdersProvider(),
+    ),
+    ChangeNotifierProvider<TasksOfDayProvider>(
+      create: (context) => TasksOfDayProvider(),
+    ),
+    ChangeNotifierProvider<WorkerAllOrdersProvider>(
+      create: (context) => WorkerAllOrdersProvider(),
+    ),
+
+    
+    
+    
   ], child: const MyApp()));
 }
 

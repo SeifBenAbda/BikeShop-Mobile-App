@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../main.dart';
 import '../../../../utils/Global Folder/glaobal_vars.dart';
+import '../../../../widgets/appointment_picker.dart';
 import 'basket_checkout_page.dart';
 
 class BasketPage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _BasketPageState extends State<BasketPage> {
   Widget emptyBasketWidget() {
     return Expanded(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.asset(
           "assets/images/emptyCart.png",
@@ -64,10 +65,26 @@ class _BasketPageState extends State<BasketPage> {
             width: 10,
           ),
           seperator(),
+          const SizedBox(height: 10),
+          appointementTextWidget(),
+          const SizedBox(height: 5),
+          AppointmentPicker(
+            initialDate: DateTime.now(),
+            isReadOnly: true,
+          ),
+          const SizedBox(height: 15),
+          seperator(),
           const SizedBox(height: 20),
           const BasketCheckout()
         ])
       ]),
+    );
+  }
+
+  Widget appointementTextWidget() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width/1.1,
+      child: Text(getText(context, "appointmentDayTime"),style: getTextStyleAbel(18, greyColor),),
     );
   }
 

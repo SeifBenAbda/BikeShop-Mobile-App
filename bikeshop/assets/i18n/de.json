@@ -43,6 +43,32 @@
   "timeToTake": "Zeit bis zur Fertigstellung",
   "proceedToPayment": "Zur Zahlung",
   "basketIsEmpty": "Der Warenkorb ist leer",
-  "myProfile": "Mein Profil"
+  "myProfile": "Mein Profil",
+  "today": "Heute",
+  "tomorrow": "Morgen",
+  "now": "Jetzt",
+  "year": "Jahr",
+  "day": "Tag",
+  "month": "Monat",
+  "minute": "Minute",
+  "hour": "Stunde",
+  "appointmentDayTime": "Termin Datum und Uhrzeit",
+  "myOrders": "Meine Bestellungen",
+  "appointment": "Termin",
+  "notStarted": "Nicht gestartet",
+  "started": "Gestartet",
+  "completed": "Abgeschlossen",
+  "canceled": "Abgesagt",
+  "logout": "Abmelden",
+  "openOrders": "Offene Bestellungen",
+  "orderId": "Bestellnummer",
+  "addToMyTasks": "Zu meinen Aufgaben hinzufügen",
+  "todaysTasks": "Heutige Aufgaben",
+  "startNow": "Jetzt starten",
+  "services": "Dienstleistungen",
+  "orderDashboard": "Bestellübersicht",
+  "searchOrder": "Bestellung suchen"
 
-}
+
+
+} 

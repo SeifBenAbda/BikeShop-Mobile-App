@@ -7,6 +7,7 @@ class Users {
   final String email;
   final String credits;
   final bool isClient;
+  final bool isAdmin;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -20,6 +21,7 @@ class Users {
     required this.email,
     required this.credits,
     required this.isClient,
+    required this.isAdmin,
     required this.createdAt,
   });
 }

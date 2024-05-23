@@ -110,8 +110,8 @@ class _ClientServiceWidgetState extends State<ClientServiceWidget>
               child: Container(
                 //height: 40,
                 //width: MediaQuery.of(context).size.width/4,
-                padding: const EdgeInsets.all(4),
-                margin: const EdgeInsets.all(4),
+                padding: const EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 decoration: getBoxDeco(10, greyColor),
                 child: Center(
                   child: Text(getText(context, widget.service.buttonText),

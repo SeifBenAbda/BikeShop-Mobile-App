@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bikeshop/utils/Global%20Folder/glaobal_vars.dart';
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:bikeshop/views/client/Client%20Home/client_home_vars.dart';
 import 'package:flutter/material.dart';
@@ -83,3 +84,56 @@ void goHomePageClient() {
   currentActiveScreenClient.value = "H";
   totalAmountOrder.value = 0.0;
 }
+
+//--------Time and Date Setup------------------//
+
+String setupDateForServerFetch(DateTime dateNow) {
+  String myDay = dateNow.day.toString();
+  String myMonth = dateNow.month.toString();
+
+  if (dateNow.day < 10) {
+    myDay = "0$myDay";
+  }
+  if (dateNow.month < 10) {
+    myMonth = "0$myMonth";
+  }
+
+  return "${dateNow.year}-$myMonth-$myDay";
+}
+
+String setupDateFromInput(DateTime dateNow) {
+ 
+  String timeIndicator = currentFallBackFile.value == "de" ? "um" : "at";
+ 
+  return "${setupDateFromInputWithoutTimeWithSlach(dateNow)} $timeIndicator ${setupTimeFromInputWithoutDate(dateNow)}";
+}
+
+String setupDateFromInputWithoutTimeWithSlach(DateTime dateNow) {
+  String myDay = dateNow.day.toString();
+  String myMonth = dateNow.month.toString();
+  String seperator = currentFallBackFile.value == "de" ? "." : "/";
+  if (dateNow.day < 10) {
+    myDay = "0$myDay";
+  }
+  if (dateNow.month < 10) {
+    myMonth = "0$myMonth";
+  }
+
+  return "$myDay$seperator$myMonth$seperator${dateNow.year}";
+}
+
+String setupTimeFromInputWithoutDate(DateTime dateNow) {
+  String myHour = dateNow.hour.toString();
+  String myMinute = dateNow.minute.toString();
+  String timeIndicator = currentFallBackFile.value == "de" ? "um" : "at";
+  if (dateNow.hour < 10) {
+    myHour = "0$myHour";
+  }
+  if (dateNow.minute < 10) {
+    myMinute = "0$myMinute";
+  }
+
+  return "$timeIndicator $myHour:$myMinute";
+}
+
+//----------------------------------------------------------------

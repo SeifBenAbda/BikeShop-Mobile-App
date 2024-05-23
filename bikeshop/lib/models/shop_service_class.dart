@@ -26,4 +26,6 @@ class ShopService {
     required this.activeClientsOnService,
     required this.isInBasket,
   });
+
+  toJson() {}
 }

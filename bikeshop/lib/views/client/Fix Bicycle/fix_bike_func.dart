@@ -1,14 +1,16 @@
 import 'package:bikeshop/models/order_class.dart';
 import 'package:bikeshop/models/shop_service_class.dart';
+import 'package:bikeshop/services/user_services.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/superbase_service.dart';
+import '../../../widgets/appointment_picker.dart';
 import 'fix_bike_vars.dart';
 
 void initiateBasket() {
   totalAmountOrder.value = 0.0;
-  final SupabaseService _supabaseService = SupabaseService();
-  final client = _supabaseService.getSuperbaseClient();
+  final SupabaseService supabaseService = SupabaseService();
+  final client = supabaseService.getSuperbaseClient();
   final userId = client.auth.currentUser!.id;
   Order order = Order(
       orderId: "order_$userId",
@@ -17,12 +19,19 @@ void initiateBasket() {
       totalAmount: ValueNotifier(0),
       discountCode: TextEditingController(text: ""),
       discountAmount: ValueNotifier("0"),
-      orderComment: TextEditingController(text: ""));
+      orderComment: TextEditingController(text: ""),
+      appointmentDate: ValueNotifier(DateTime.now()),
+       isFinished: null, 
+       finishedAt: null, 
+       workerId: '', 
+       workerComments: null, 
+       isStarted: null, 
+       startedAt: null, 
+       isCanceled: null, 
+       canceledAt: null, payementMethod: '', orderDate: null, serviceCount: null, orderOwnerName: "${myUser!.lastName} ${myUser!.firstName}");
 
   currentOrder = order;
 }
-
-
 
 void updateOrderTotalAmount() {
   currentOrder!.totalAmount.value = totalAmountOrder.value;
@@ -38,4 +47,6 @@ bool isServiceInBasket(ShopService service) {
       -1;
 }
 
-
+void updateAppointementDay() {
+  currentOrder!.appointmentDate.value = dateTimeAppoitmentNotifier.value;
+}

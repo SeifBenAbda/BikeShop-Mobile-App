@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/Global Folder/global_deco.dart';
+
 class ClientProfileField extends StatefulWidget {
+  final String label;
   final String fieldValue;
+  final bool isEnabled;
   final bool isObscured;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final double fieldWidth;
-  const ClientProfileField({super.key, required this.fieldValue, required this.isObscured, required this.controller, required this.fieldWidth});
+  const ClientProfileField(
+      {super.key,
+      required this.label,
+      required this.fieldValue,
+      required this.isEnabled,
+      required this.isObscured,
+      required this.controller,
+      required this.fieldWidth});
 
   @override
   State<ClientProfileField> createState() => _ClientProfileFieldState();
@@ -16,40 +27,33 @@ class _ClientProfileFieldState extends State<ClientProfileField> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        inputHint(context),
+        inputHint(),
         const SizedBox(
           height: 5,
         ),
         Container(
-          decoration: getBoxDeco(10, optionConColor),
+          decoration: getBoxDeco(10, blueColor),
           //height: payementTextFieldHeight,
-          width: fieldWidth,
+          width: widget.fieldWidth,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: TextFormField(
+              enabled: widget.isEnabled,
               minLines: 1,
-              maxLines: isPasswordField?1:null,
+              maxLines: widget.isObscured ? 1 : null,
               keyboardType: TextInputType.text,
-              controller: controller,
+              controller: widget.controller,
+              initialValue: widget.fieldValue,
               autofocus: false,
-              obscureText: isPasswordField,
+              obscureText: widget.isObscured,
               style: getTextStyleWhiteFjallone(15),
               cursorColor: cursorTextFieldColor3,
               decoration: InputDecoration(
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  border: InputBorder.none,
-                  hintText: hintText,
-                  hintStyle: getTextStyleWhiteFjallone(15),
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        controller.text = "";
-                      },
-                      icon: const Icon(
-                        Icons.clear,
-                        color: Colors.white,
-                        size: 20,
-                      ))),
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                border: InputBorder.none,
+                hintStyle: getTextStyleWhiteFjallone(15),
+              ),
             ),
           ),
         ),
@@ -57,14 +61,11 @@ class _ClientProfileFieldState extends State<ClientProfileField> {
     );
   }
 
-
-
-
   Widget inputHint() {
     return SizedBox(
       width: widget.fieldWidth - 10,
       child: Text(
-        label,
+        widget.label,
         style: getTextStyleWhiteFjallone(15),
       ),
     );

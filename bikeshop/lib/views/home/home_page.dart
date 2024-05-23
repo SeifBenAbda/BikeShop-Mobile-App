@@ -2,6 +2,7 @@ import 'package:bikeshop/utils/Global%20Folder/glaobal_vars.dart';
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:bikeshop/views/client/Client%20Home/client_home_page.dart';
 import 'package:bikeshop/views/home/home_vars.dart';
+import 'package:bikeshop/views/worker/Worker%20Home/worker_home_page.dart';
 import 'package:bikeshop/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../services/providers/connectitvity_provider.dart';
 import '../../services/user_services.dart';
 import '../../utils/Global Folder/global_func.dart';
+import '../admin/Admin Home/admin_home_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -84,13 +86,12 @@ class _HomePageState extends State<HomePage> {
           if (!isLoadingUser.value) {
             if (myUser!.isClient) {
               return const ClientHomePage();
-            } else if (!isLoadingUser.value && !myUser!.isClient) {
-              return Text(
-                "WORKER",
-                style: getTextStyleWhiteFjallone(20),
-              );
+            } else if (!isLoadingUser.value &&
+                !myUser!.isClient &&
+                !myUser!.isClient) {
+              return const WorkerHomePage();
             } else {
-              return Container();
+              return const AdminHomePage();
             }
           }
           return loadingWidget(isLoadingUser);

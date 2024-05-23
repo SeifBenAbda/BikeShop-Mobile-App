@@ -1,0 +1,216 @@
+import 'package:bikeshop/models/order_class.dart';
+import 'package:bikeshop/models/shop_service_class.dart';
+import 'package:bikeshop/utils/Global%20Folder/global_func.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'superbase_service.dart';
+
+class OrderService {
+  final SupabaseService _supabaseService = SupabaseService();
+
+  Future<bool> sendOrderToServer(Order order) async {
+    final client = _supabaseService.getSuperbaseClient();
+    Map<String, dynamic> orderData = {
+      "order_id": order.orderId.toString(),
+      "user_id": order.orderUserId,
+      "payment_method": "TBD",
+      "order_date": DateTime.now().toString(),
+      "total_price": order.totalAmount.value.toString(),
+      "is_canceled": false.toString(),
+      "comment": "",
+      "discount_code": "",
+      "discount_amount": 0,
+      "appointment_day": order.appointmentDate.value.toString(),
+      "service_count": order.orderedServices.value.length.toString(),
+      "isAvailable": false.toString()
+    };
+
+    // Insert the order data
+    try {
+      final response =
+          await client.from('user_order').insert(orderData).select();
+      if (response.isNotEmpty) {
+        int serviceIndex = 1;
+        for (ShopService service in order.orderedServices.value) {
+          await client.from('user_order_details').insert({
+            'order_detail_id':
+                '${response[0]["order_id"]}_details_$serviceIndex',
+            'order_id': response[0]["order_id"],
+            'service_id': service.serviceId
+          }).then((value) {
+            serviceIndex++;
+          });
+        }
+      } else {
+        print('Error inserting order: Response is null');
+      }
+    } on FunctionException catch (error) {
+      print('Error invoking function: $error');
+    } catch (error) {
+      print('Error inserting order: $error');
+    }
+
+    return true;
+  }
+
+  Future<List<Order>> getUserOrdersWithServiceCount() async {
+    List<Order> orderList = [];
+    try {
+      final client = _supabaseService.getSuperbaseClient();
+      final userId = client.auth.currentUser!.id;
+      final response =
+          await client.from("user_order").select().eq("user_id", userId);
+
+      for (var userOrder in response) {
+        Order order = createOrder(userOrder);
+        orderList.add(order);
+      }
+    } catch (error) {
+      // Handle error
+      print('Error: $error');
+    }
+
+    return orderList;
+  }
+
+  //This returns the List of orders that a Worker can access when the worker_id is null
+  Future<List<Order>> getOpenedOrders() async {
+    List<Order> orderList = [];
+
+    try {
+      final client = _supabaseService.getSuperbaseClient();
+      final response =
+          await client.from("user_order").select().eq("isAvailable", true);
+      for (var userOrder in response) {
+        Order order = createOrder(userOrder);
+        orderList.add(order);
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+
+    return orderList;
+  }
+
+  Future<void> assignOrderToWorker(Order order) async {
+    try {
+      final client = _supabaseService.getSuperbaseClient();
+      final userId = client.auth.currentUser!.id;
+      await client
+          .from('user_order')
+          .update({'worker_id': userId, 'isAvailable': false.toString()}).match(
+              {'order_id': order.orderId});
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
+  //-- get today's tasks for specific Worker
+  Future<List<Order>> getTodayOrderToWorker() async {
+    List<Order> orderList = [];
+    try {
+      final client = _supabaseService.getSuperbaseClient();
+      final userId = client.auth.currentUser!.id;
+      final response = await client.rpc('gettodaystaskperworker', params: {
+        'my_worker_id': userId,
+        'target_date': setupDateForServerFetch(DateTime.now())
+      });
+
+      for (var userOrder in response) {
+        Order order = createOrder(userOrder);
+        orderList.add(order);
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+
+    return orderList;
+  }
+
+  //--- get All Worker Tasks --------------------
+  Future<List<Order>> getWorkerAllOrdersWithServices() async {
+    List<Order> orderList = [];
+    try {
+      final client = _supabaseService.getSuperbaseClient();
+      final userId = client.auth.currentUser!.id;
+      final response = await client.rpc('get_worker_orders', params: {
+        'myworkerid': userId,
+      });
+
+      for (var userOrder in response) {
+        Order order = createOrder(userOrder);
+        int orderIndex =
+            orderList.indexWhere((element) => element.orderId == order.orderId);
+        if (orderIndex == -1) {
+          orderList.add(order);
+          modifyOrderServices(order, userOrder);
+        } else {
+          modifyOrderServices(order, userOrder);
+        }
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+
+    return orderList;
+  }
+
+  void modifyOrderServices(Order order, dynamic userOrder) {
+    ShopService listOfServices = createService(userOrder);
+
+    order.orderedServices.value.add(listOfServices);
+  }
+
+  ShopService createService(dynamic userOrder) {
+    ShopService result = ShopService(
+        serviceId: userOrder["serviceid"],
+        serviceName: userOrder["servicename"].toString(),
+        serviceNameGerman: userOrder["de_servicename"].toString(),
+        serviceImage: userOrder["serviceimage"].toString(),
+        servicePrice: double.parse(userOrder["serviceprice"].toString()),
+        serviceDuration: Duration(
+            minutes: int.parse(userOrder["servicedurationminutes"].toString())),
+        isServiceAvailable: ValueNotifier(true),
+        serviceDiscount: ValueNotifier(double.parse(userOrder["servicediscount"].toString())),
+        activeClientsOnService: ValueNotifier(0),
+        isInBasket: ValueNotifier(false));
+
+    return result;
+  }
+
+  Order createOrder(dynamic userOrder) {
+    Order order = Order(
+        orderId: userOrder["order_id"].toString(),
+        orderUserId: userOrder["user_id"].toString(),
+        orderedServices: ValueNotifier([]),
+        totalAmount: ValueNotifier(userOrder["total_price"].toString()),
+        discountCode: TextEditingController(text: userOrder["discount_code"]),
+        discountAmount: ValueNotifier(0.0),
+        orderComment: TextEditingController(text: userOrder["comment"]),
+        appointmentDate: ValueNotifier(
+            DateTime.parse(userOrder["appointment_day"].toString())),
+        isFinished:
+            ValueNotifier(userOrder["is_finished"].toString() == "true"),
+        finishedAt: userOrder["finished_at"].toString() == "null"
+            ? null
+            : DateTime.parse(userOrder["finished_at"].toString()),
+        workerId: userOrder["worker_id"].toString(),
+        workerComments: ValueNotifier(userOrder["comments"].toString()),
+        isStarted: ValueNotifier(userOrder["is_started"].toString() == "true"),
+        startedAt: userOrder["started_at"].toString() == "null"
+            ? null
+            : ValueNotifier(DateTime.parse(userOrder["started_at"].toString())),
+        isCanceled:
+            ValueNotifier(userOrder["is_canceled"].toString() == "true"),
+        canceledAt: null,
+        payementMethod: userOrder["payment_method"].toString(),
+        orderDate:
+            ValueNotifier(DateTime.parse(userOrder["order_date"].toString())),
+        serviceCount: userOrder["service_count"], orderOwnerName: 
+        userOrder["user_last_name"]+" "+userOrder["user_first_name"]);
+
+    return order;
+  }
+
+}

@@ -4,6 +4,8 @@ import 'package:bikeshop/views/client/Fix%20Bicycle/Fix%20Bike%20Basket/basket_f
 import 'package:bikeshop/views/client/Fix%20Bicycle/fix_bike_vars.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../services/order_service.dart';
+
 class BasketCheckout extends StatefulWidget {
   const BasketCheckout({super.key});
 
@@ -124,14 +126,20 @@ class _BasketCheckoutState extends State<BasketCheckout> {
   //Pay Button
 
   Widget payButton() {
-    return Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width / 1.1,
-      decoration: getBoxDeco(12, greyColor),
-      child: Center(
-        child: Text(
-          getText(context, "proceedToPayment"),
-          style: getTextStyleAbel(18, bgColor),
+    return GestureDetector(
+      onTap: () async {
+        OrderService os = OrderService();
+        await os.sendOrderToServer(currentOrder!);
+      },
+      child: Container(
+        height: 50,
+        width: MediaQuery.of(context).size.width / 1.1,
+        decoration: getBoxDeco(12, greyColor),
+        child: Center(
+          child: Text(
+            getText(context, "proceedToPayment"),
+            style: getTextStyleAbel(18, bgColor),
+          ),
         ),
       ),
     );
