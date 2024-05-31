@@ -1,5 +1,6 @@
 import 'package:bikeshop/utils/Global%20Folder/glaobal_vars.dart';
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
+import 'package:bikeshop/views/worker/Worker%20Profile/worker_profile.dart';
 import 'package:bikeshop/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ import 'worker_open_orders.dart';
 import 'worker_tasks_day.dart';
 
 var isWorkerHomeLoading = ValueNotifier(false);
-
+ List<Order> allOrders = [];
 class WorkerHomePage extends StatefulWidget {
   const WorkerHomePage({super.key});
 
@@ -25,11 +26,11 @@ class WorkerHomePage extends StatefulWidget {
 
 class _WorkerHomePageState extends State<WorkerHomePage> {
   bool isReady = false;
-  List<Order> allOrders = [];
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset:true , 
+        resizeToAvoidBottomInset: true,
         bottomNavigationBar: isSmallScreen(context)
             ? BottomNavigation(
                 navigateNavBarFn: navigateWorker,
@@ -47,6 +48,8 @@ class _WorkerHomePageState extends State<WorkerHomePage> {
         return workerHomePageWidget();
       case "W_ORDERS_PAGE":
         return const WorkerAllOrdersPage();
+      case "W_PROFILE":
+        return const WorkerProfile();
       default:
         return workerHomePageWidget();
     }

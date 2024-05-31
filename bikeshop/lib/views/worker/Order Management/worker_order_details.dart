@@ -81,7 +81,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
           const SizedBox(
             height: 20,
           ),
-          startFinishOrderBtn(order)
+          startFinishOrderBtn(order),
         ],
       ),
     );
@@ -91,15 +91,8 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
     return SizedBox(
       width: MediaQuery.of(context).size.width / 1.2,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(
-            width: 10,
-          ),
-          Image.asset(
-            "assets/images/order.png",
-            height: 35,
-            width: 35,
-          ),
           const SizedBox(
             width: 10,
           ),
@@ -110,6 +103,9 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
               style: getTextStyleAbel(18, blueColor),
             ),
           ),
+          const Spacer(),
+          updateOrderButton(order),
+
         ],
       ),
     );
@@ -214,6 +210,26 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
                     : getText(context, "closeOrder"),
                 style: getTextStyleAbel(16, greyColor)),
           ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget updateOrderButton(Order order) {
+    bool isCanceled = order.isCanceled!.value;
+    bool isFinished = order.isFinished!.value;
+    bool isStarted = order.isStarted!.value && !isFinished;
+
+    if (!isCanceled && !isFinished && isStarted) {
+      return Container(
+        height: 45,
+        width: 70,
+        decoration:
+            getBoxDecoWithBorder(8, greyColor,blueColor),
+        child: Center(
+          child: Image.asset("assets/images/updated.png",height: 35,width: 35,)
         ),
       );
     } else {

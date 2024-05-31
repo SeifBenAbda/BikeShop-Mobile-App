@@ -417,5 +417,13 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
   }
 
   //-------------------Function that uses the State --------------------------------
-  void goBackWorkerOrderPage() {}
+  void goBackWorkerOrderPage() {
+    if (isOrderDetailsPressed.value) {
+      setState(() {
+        isOrderDetailsPressed.value = false;
+      });
+    } else {
+      setState(() {});
+    }
+  }
 }

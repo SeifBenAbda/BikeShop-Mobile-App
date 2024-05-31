@@ -129,8 +129,8 @@ class OrderService {
     return orderList;
   }
 
+  List<Order> orderList = [];
   Future<List<Order>> getOrdersDetailled() async {
-    List<Order> orderList = allOrdersWorker;
     try {
       final client = _supabaseService.getSuperbaseClient();
       final response = await client.rpc('get_all_orders_detailled');
@@ -140,10 +140,11 @@ class OrderService {
             orderList.indexWhere((element) => element.orderId == order.orderId);
         if (orderIndex == -1) {
           orderList.add(order);
-          modifyOrderServices(order, userOrder, false);
+          modifyOrderServices(order, userOrder, false, null);
         } else {
           order = orderList.elementAt(orderIndex);
           updateOrder(userOrder, order);
+          modifyOrderServices(order, userOrder, true, order);
         }
       }
     } catch (error) {
@@ -154,9 +155,8 @@ class OrderService {
   }
 
   //--- get All Worker Tasks --------------------
-
+  List<Order> workerOrders = allOrdersWorker;
   Future<List<Order>> getWorkerAllOrdersWithServices() async {
-    List<Order> orderList = [];
     try {
       final client = _supabaseService.getSuperbaseClient();
       final userId = client.auth.currentUser!.id;
@@ -166,15 +166,16 @@ class OrderService {
 
       for (var userOrder in response) {
         Order order = createOrder(userOrder);
-        int orderIndex =
-            orderList.indexWhere((element) => element.orderId == order.orderId);
+        int orderIndex = workerOrders
+            .indexWhere((element) => element.orderId == order.orderId);
         if (orderIndex == -1) {
-          orderList.add(order);
-          modifyOrderServices(order, userOrder, false);
+          workerOrders.add(order);
+          modifyOrderServices(order, userOrder, false, null);
         } else {
-          order = orderList.elementAt(orderIndex);
-          updateOrder(userOrder, orderList.elementAt(orderIndex));
-          modifyOrderServices(order, userOrder, true);
+          //order = workerOrders.elementAt(orderIndex);
+          updateOrder(userOrder, workerOrders.elementAt(orderIndex));
+          modifyOrderServices(workerOrders.elementAt(orderIndex), userOrder,
+              true, workerOrders.elementAt(orderIndex));
           //orderList.add(order);
           //modifyOrderServices(order, userOrder,true);
           //print("Order Already Exists");
@@ -184,16 +185,24 @@ class OrderService {
       print("Error: $error");
     }
 
-    return orderList;
+    return workerOrders;
   }
 
-  void modifyOrderServices(Order order, dynamic userOrder, bool orderExists) {
-    ShopService listOfServices = createService(userOrder, order, orderExists);
-
-    order.orderedServices.value.add(listOfServices);
+  void modifyOrderServices(
+      Order order, dynamic userOrder, bool orderExists, Order? existingOrder) {
+    ShopService service = createService(userOrder);
+    int index = existingOrder == null
+        ? -1
+        : existingOrder.orderedServices.value
+            .indexWhere((element) => element.serviceId == service.serviceId);
+    if (index != -1) {
+      order.orderedServices.value = existingOrder!.orderedServices.value;
+    } else {
+      order.orderedServices.value.add(service);
+    }
   }
 
-  ShopService createService(dynamic userOrder, Order order, bool orderExists) {
+  ShopService createService(dynamic userOrder) {
     ShopService result = ShopService(
         serviceId: userOrder["serviceid"],
         serviceName: userOrder["servicename"].toString(),
