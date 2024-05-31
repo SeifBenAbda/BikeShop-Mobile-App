@@ -103,9 +103,9 @@ String setupDateForServerFetch(DateTime dateNow) {
 
 String setupDateFromInput(DateTime dateNow) {
  
-  String timeIndicator = currentFallBackFile.value == "de" ? "um" : "at";
+  //String timeIndicator = currentFallBackFile.value == "de" ? "um" : "at";
  
-  return "${setupDateFromInputWithoutTimeWithSlach(dateNow)} $timeIndicator ${setupTimeFromInputWithoutDate(dateNow)}";
+  return "${setupDateFromInputWithoutTimeWithSlach(dateNow)} ${setupTimeFromInputWithoutDate(dateNow)}";
 }
 
 String setupDateFromInputWithoutTimeWithSlach(DateTime dateNow) {

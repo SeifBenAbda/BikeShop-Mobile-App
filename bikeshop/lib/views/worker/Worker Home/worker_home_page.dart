@@ -2,7 +2,10 @@ import 'package:bikeshop/utils/Global%20Folder/glaobal_vars.dart';
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:bikeshop/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../models/order_class.dart';
+import '../../../services/providers/order_providers.dart';
 import '../../../utils/Global Folder/global_func.dart';
 import '../../../widgets/bottom_nav.dart';
 import '../../../widgets/date_time_widget.dart';
@@ -21,9 +24,12 @@ class WorkerHomePage extends StatefulWidget {
 }
 
 class _WorkerHomePageState extends State<WorkerHomePage> {
+  bool isReady = false;
+  List<Order> allOrders = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset:true , 
         bottomNavigationBar: isSmallScreen(context)
             ? BottomNavigation(
                 navigateNavBarFn: navigateWorker,
@@ -61,23 +67,54 @@ class _WorkerHomePageState extends State<WorkerHomePage> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Flexible(
-                    child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      WorkerOpenOrders(),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      WorkerTaksDay()
-                    ],
-                  ),
-                ))
+                openOrderAndDayTasksWidget()
               ],
             ),
             loadingWidget(isWorkerHomeLoading)
           ],
         ));
+  }
+
+  Widget openOrderAndDayTasksWidget() {
+    final openOrdersProvider =
+        Provider.of<OrdersProvider>(context, listen: true);
+    openOrdersProvider.getAllOrdersDetailled().then((value) {
+      isReady = true;
+    }).onError((error, stackTrace) {
+      isReady = true;
+    });
+    if (!isReady) {
+      return Container(
+        color: bgColor.withOpacity(0.3),
+        child: const Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        ),
+      );
+    } else {
+      return openOrdersTasksDayConsumer();
+    }
+  }
+
+  Widget openOrdersTasksDayConsumer() {
+    return Consumer<OrdersProvider>(builder: (context, allOrdersProvider, _) {
+      allOrders = allOrdersProvider.myOrdersList;
+      if (allOrders.isEmpty) {
+        // Show a loading indicator or empty state if no clients are available
+        return Container();
+      }
+      return const Flexible(
+          child: SingleChildScrollView(
+        child: Column(
+          children: [
+            WorkerOpenOrders(),
+            SizedBox(
+              height: 5,
+            ),
+            WorkerTaksDay()
+          ],
+        ),
+      ));
+    });
   }
 
   Widget workerTopContainerHome() {

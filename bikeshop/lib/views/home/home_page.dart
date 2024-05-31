@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset:false,
       backgroundColor: bgColor,
       body: SizedBox(
         height: MediaQuery.of(context).size.height,

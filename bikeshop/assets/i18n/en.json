@@ -67,7 +67,11 @@
   "startNow": "Start Now",
   "services": "Services",
   "orderDashboard": "Order Dashboard",
-  "searchOrder": "Search Order"
+  "searchOrder": "Search Order",
+  "closeOrder": "Close Order",
+  "myNotes": "My Notes",
+  "clientNotes": "Client Notes",
+  "notesUnavailable": "Notes unavailable"
 
 
 

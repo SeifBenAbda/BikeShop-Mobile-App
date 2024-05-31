@@ -5,6 +5,7 @@ import '../../../models/order_class.dart';
 import '../../../services/providers/order_providers.dart';
 import '../../../utils/Global Folder/global_deco.dart';
 import '../../../utils/Global Folder/global_func.dart';
+import '../worker_shared_func.dart';
 
 class WorkerTaksDay extends StatefulWidget {
   const WorkerTaksDay({super.key});
@@ -34,8 +35,8 @@ class _WorkerTaksDayState extends State<WorkerTaksDay> {
 
   Widget workerTasksDayMainWidget() {
     final ordersProvider =
-        Provider.of<TasksOfDayProvider>(context, listen: true);
-    ordersProvider.getWorkerTasksDay().then((value) {
+        Provider.of<WorkerAllOrdersProvider>(context, listen: true);
+    ordersProvider.getWorkerAllOrdersWithServices().then((value) {
       isReady = true;
     }).onError((error, stackTrace) {
       isReady = true;
@@ -54,9 +55,10 @@ class _WorkerTaksDayState extends State<WorkerTaksDay> {
   }
 
   Widget ordersDayListWidget() {
-    return Consumer<TasksOfDayProvider>(
+    return Consumer<WorkerAllOrdersProvider>(
         builder: (context, openOrderProvider, _) {
       ordersOfDay = openOrderProvider.orderList;
+      ordersOfDay = openOrderProvider.filterOrdersWorkerToday();
       if (ordersOfDay.isEmpty) {
         // Show a loading indicator or empty state if no clients are available
         return Container();
@@ -93,7 +95,7 @@ class _WorkerTaksDayState extends State<WorkerTaksDay> {
             const SizedBox(
               height: 10,
             ),
-            orderAppointmentWidget(orderDay),
+            appointmentAndDurationWidget(orderDay),
             const SizedBox(
               height: 10,
             ),
@@ -119,7 +121,7 @@ class _WorkerTaksDayState extends State<WorkerTaksDay> {
 
   Widget orderId(Order order) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.8,
+      width: MediaQuery.of(context).size.width / 1.9,
       child: Column(
         children: [
           Align(
@@ -173,9 +175,42 @@ class _WorkerTaksDayState extends State<WorkerTaksDay> {
     );
   }
 
+  Widget appointmentAndDurationWidget(Order orderDay) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [orderAppointmentWidget(orderDay),orderDurationWidget(orderDay)],
+      ),
+    );
+  }
+
+  Widget orderDurationWidget(Order orderDay) {
+    String orderDuration = getOrderDuration(orderDay);
+    return Row(
+      children: [
+        const SizedBox(
+          width: 10,
+        ),
+        Image.asset(
+          "assets/images/duration.png",
+          height: 35,
+          width: 35,
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Text(
+          orderDuration,
+          style: getTextStyleAbel(14, blueColor),
+        )
+      ],
+    );
+  }
+
   Widget orderAppointmentWidget(Order orderDay) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.2,
+      //width: MediaQuery.of(context).size.width / 3,
       child: Row(
         children: [
           Image.asset(

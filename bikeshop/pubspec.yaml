@@ -105,6 +105,7 @@ flutter:
     - assets/images/accessories.png
     - assets/images/tools.png
     - assets/images/accept.png
+    - assets/images/error.png
     - assets/images/warning.png
     - assets/images/basic_repair.png
     - assets/images/tire.png
@@ -115,6 +116,16 @@ flutter:
     - assets/images/emptyCart.png
     - assets/images/date.png
     - assets/images/order.png
+    - assets/images/fix_now.png
+    - assets/images/filter.png
+    - assets/images/look.png
+    - assets/images/qr-code.png
+    - assets/images/bell.png
+    
+
+
+    
+    
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

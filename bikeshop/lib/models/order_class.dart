@@ -2,31 +2,31 @@ import 'package:bikeshop/models/shop_service_class.dart';
 import 'package:flutter/material.dart';
 
 class Order {
-  final String orderId;
-  final String orderUserId;
-  final ValueNotifier<List<ShopService>> orderedServices;
-  final ValueNotifier totalAmount;
-  final TextEditingController discountCode;
-  final ValueNotifier discountAmount;
-  final TextEditingController orderComment;
-  final ValueNotifier<DateTime> appointmentDate;
-  final ValueNotifier<DateTime>? orderDate;
+   String orderId;
+   String orderUserId;
+   ValueNotifier<List<ShopService>> orderedServices;
+   ValueNotifier totalAmount;
+   TextEditingController discountCode;
+   ValueNotifier discountAmount;
+   TextEditingController orderComment;
+   ValueNotifier<DateTime> appointmentDate;
+   ValueNotifier<DateTime>? orderDate;
 
   //--addons
-  final ValueNotifier? isFinished;
-  final DateTime? finishedAt;
-  final String? workerId;
-  final ValueNotifier? workerComments;
-  final ValueNotifier? isStarted;
-  final ValueNotifier? startedAt;
-  final ValueNotifier? isCanceled;
-  final ValueNotifier? canceledAt;
+   ValueNotifier? isFinished;
+   DateTime? finishedAt;
+   String? workerId;
+   ValueNotifier? workerComments;
+   ValueNotifier? isStarted;
+   DateTime? startedAt;
+   ValueNotifier? isCanceled;
+   ValueNotifier? canceledAt;
 
-  final String? payementMethod;
+   String? payementMethod;
 
-  final int? serviceCount;
+   int? serviceCount;
 
-  final String? orderOwnerName;
+   String? orderOwnerName;
 
   Order(
       {required this.orderId,

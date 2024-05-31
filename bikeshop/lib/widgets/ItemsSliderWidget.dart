@@ -36,7 +36,7 @@ class _ListSliderState extends State<ListSlider> {
   }
 
   void _startAutoSlide() {
-    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 6), (timer) {
       if (_isSliding) {
         final currentIndex = (_scrollController.position.pixels /
                 (widget.sliderContentWidth))

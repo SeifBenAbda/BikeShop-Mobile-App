@@ -14,6 +14,8 @@ class ShopService {
 
   final ValueNotifier isInBasket;
 
+  ValueNotifier<bool>? isFinished ;
+
   ShopService({
     required this.serviceId,
     required this.serviceName,
@@ -25,6 +27,7 @@ class ShopService {
     required this.serviceDiscount,
     required this.activeClientsOnService,
     required this.isInBasket,
+    this.isFinished, 
   });
 
   toJson() {}

@@ -82,7 +82,7 @@ class _SearchBoxState extends State<SearchBox> {
             controller: widget.controller,
             autofocus: false,
             style: getTextStyleAbel(15, blueColor),
-            cursorColor: cursorTextFieldColor3,
+            cursorColor: blueColor,
             decoration: InputDecoration(
               focusedBorder: InputBorder.none,
               enabledBorder: InputBorder.none,

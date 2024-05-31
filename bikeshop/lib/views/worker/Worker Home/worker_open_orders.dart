@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order_class.dart';
-import '../../client/Service Menu/ItemsSliderWidget.dart';
+import '../../../widgets/ItemsSliderWidget.dart';
 import 'worker_home_page.dart';
 
 class WorkerOpenOrders extends StatefulWidget {
@@ -30,7 +30,7 @@ class _WorkerOpenOrdersState extends State<WorkerOpenOrders> {
           const SizedBox(
             height: 10,
           ),
-          openOrdersMainWidget(),
+          openOrderListWidget(),
         ],
       ),
     );
@@ -54,10 +54,10 @@ class _WorkerOpenOrdersState extends State<WorkerOpenOrders> {
     );
   }
 
-  Widget openOrdersMainWidget() {
+  Widget openOrderListWidget() {
     final openOrdersProvider =
         Provider.of<OrdersProvider>(context, listen: true);
-    openOrdersProvider.getOpenOrders().then((value) {
+    openOrdersProvider.getAllOrdersDetailled().then((value) {
       isReady = true;
     }).onError((error, stackTrace) {
       isReady = true;
@@ -70,14 +70,15 @@ class _WorkerOpenOrdersState extends State<WorkerOpenOrders> {
         ),
       );
     } else {
-      return openOrderListWidget();
+      return openOrdersConsumer();
     }
+    
   }
 
-  Widget openOrderListWidget() {
-    return Consumer<OrdersProvider>(
-        builder: (context, openOrderProvider, _) {
+  Widget openOrdersConsumer(){
+    return Consumer<OrdersProvider>(builder: (context, openOrderProvider, _) {
       openedOrders = openOrderProvider.myOrdersList;
+      openedOrders = openOrderProvider.filterOpenedOrders();
       if (openedOrders.isEmpty) {
         // Show a loading indicator or empty state if no clients are available
         return Container();

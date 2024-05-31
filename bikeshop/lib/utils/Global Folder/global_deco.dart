@@ -22,6 +22,9 @@ const Color redColor = Color(0xfff62e49);
 
 const Color greenColor = Color(0xFF22B391);
 
+const Color greenColor2 = Color(0xFF049072);
+
+
 const Color bgProductColor = Color(0xff262a2d);
 
 const Color greyColor = Color(0xFFFEEEEE);

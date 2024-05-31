@@ -4,6 +4,7 @@ import 'package:bikeshop/utils/Global%20Folder/global_func.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../views/worker/Order Management/worker_all_orders.dart';
 import 'superbase_service.dart';
 
 class OrderService {
@@ -128,7 +129,32 @@ class OrderService {
     return orderList;
   }
 
+  Future<List<Order>> getOrdersDetailled() async {
+    List<Order> orderList = allOrdersWorker;
+    try {
+      final client = _supabaseService.getSuperbaseClient();
+      final response = await client.rpc('get_all_orders_detailled');
+      for (var userOrder in response) {
+        Order order = createOrder(userOrder);
+        int orderIndex =
+            orderList.indexWhere((element) => element.orderId == order.orderId);
+        if (orderIndex == -1) {
+          orderList.add(order);
+          modifyOrderServices(order, userOrder, false);
+        } else {
+          order = orderList.elementAt(orderIndex);
+          updateOrder(userOrder, order);
+        }
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+
+    return orderList;
+  }
+
   //--- get All Worker Tasks --------------------
+
   Future<List<Order>> getWorkerAllOrdersWithServices() async {
     List<Order> orderList = [];
     try {
@@ -144,9 +170,14 @@ class OrderService {
             orderList.indexWhere((element) => element.orderId == order.orderId);
         if (orderIndex == -1) {
           orderList.add(order);
-          modifyOrderServices(order, userOrder);
+          modifyOrderServices(order, userOrder, false);
         } else {
-          modifyOrderServices(order, userOrder);
+          order = orderList.elementAt(orderIndex);
+          updateOrder(userOrder, orderList.elementAt(orderIndex));
+          modifyOrderServices(order, userOrder, true);
+          //orderList.add(order);
+          //modifyOrderServices(order, userOrder,true);
+          //print("Order Already Exists");
         }
       }
     } catch (error) {
@@ -156,13 +187,13 @@ class OrderService {
     return orderList;
   }
 
-  void modifyOrderServices(Order order, dynamic userOrder) {
-    ShopService listOfServices = createService(userOrder);
+  void modifyOrderServices(Order order, dynamic userOrder, bool orderExists) {
+    ShopService listOfServices = createService(userOrder, order, orderExists);
 
     order.orderedServices.value.add(listOfServices);
   }
 
-  ShopService createService(dynamic userOrder) {
+  ShopService createService(dynamic userOrder, Order order, bool orderExists) {
     ShopService result = ShopService(
         serviceId: userOrder["serviceid"],
         serviceName: userOrder["servicename"].toString(),
@@ -172,7 +203,8 @@ class OrderService {
         serviceDuration: Duration(
             minutes: int.parse(userOrder["servicedurationminutes"].toString())),
         isServiceAvailable: ValueNotifier(true),
-        serviceDiscount: ValueNotifier(double.parse(userOrder["servicediscount"].toString())),
+        serviceDiscount: ValueNotifier(
+            double.parse(userOrder["servicediscount"].toString())),
         activeClientsOnService: ValueNotifier(0),
         isInBasket: ValueNotifier(false));
 
@@ -187,7 +219,8 @@ class OrderService {
         totalAmount: ValueNotifier(userOrder["total_price"].toString()),
         discountCode: TextEditingController(text: userOrder["discount_code"]),
         discountAmount: ValueNotifier(0.0),
-        orderComment: TextEditingController(text: userOrder["comment"]),
+        orderComment:
+            TextEditingController(text: userOrder["comment"].toString()),
         appointmentDate: ValueNotifier(
             DateTime.parse(userOrder["appointment_day"].toString())),
         isFinished:
@@ -200,17 +233,44 @@ class OrderService {
         isStarted: ValueNotifier(userOrder["is_started"].toString() == "true"),
         startedAt: userOrder["started_at"].toString() == "null"
             ? null
-            : ValueNotifier(DateTime.parse(userOrder["started_at"].toString())),
+            : DateTime.parse(userOrder["started_at"].toString()),
         isCanceled:
             ValueNotifier(userOrder["is_canceled"].toString() == "true"),
         canceledAt: null,
         payementMethod: userOrder["payment_method"].toString(),
         orderDate:
             ValueNotifier(DateTime.parse(userOrder["order_date"].toString())),
-        serviceCount: userOrder["service_count"], orderOwnerName: 
-        userOrder["user_last_name"]+" "+userOrder["user_first_name"]);
+        serviceCount: userOrder["service_count"],
+        orderOwnerName:
+            userOrder["user_last_name"] + " " + userOrder["user_first_name"]);
 
     return order;
   }
 
+  void updateOrder(dynamic userOrder, Order existingOrder) {
+    existingOrder.workerId = userOrder["worker_id"].toString();
+
+    existingOrder.orderComment =
+        TextEditingController(text: userOrder["comment"].toString());
+
+    existingOrder.isFinished =
+        ValueNotifier(userOrder["is_finished"].toString() == "true");
+
+    existingOrder.finishedAt = userOrder["finished_at"].toString() == "null"
+        ? null
+        : DateTime.parse(userOrder["finished_at"].toString());
+
+    existingOrder.workerComments =
+        ValueNotifier(userOrder["comments"].toString());
+
+    existingOrder.isStarted =
+        ValueNotifier(userOrder["is_started"].toString() == "true");
+
+    existingOrder.startedAt = userOrder["started_at"].toString() == "null"
+        ? null
+        : DateTime.parse(userOrder["finished_at"].toString());
+
+    existingOrder.isCanceled =
+        ValueNotifier(userOrder["is_canceled"].toString() == "true");
+  }
 }

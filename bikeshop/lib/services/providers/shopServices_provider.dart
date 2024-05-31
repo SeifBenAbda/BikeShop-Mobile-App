@@ -41,7 +41,8 @@ class ShopServiceProvider extends ChangeNotifier {
           activeClientsOnService:
               ValueNotifier(data['maxserviceclients'] as int),
           serviceNameGerman: data['de_servicename'] as String,
-          isInBasket: serviceExit?ValueNotifier(currentOrder!.orderedServices.value.elementAt(serviceIndex).isInBasket.value):ValueNotifier(false), // Assuming this is correct
+          isInBasket: serviceExit?ValueNotifier(currentOrder!.orderedServices.value.elementAt(serviceIndex).isInBasket.value):ValueNotifier(false), 
+          isFinished: ValueNotifier(false), // Assuming this is correct
         );
         result.add(shopService);
       }

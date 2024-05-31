@@ -67,7 +67,12 @@
   "startNow": "Jetzt starten",
   "services": "Dienstleistungen",
   "orderDashboard": "Bestellübersicht",
-  "searchOrder": "Bestellung suchen"
+  "searchOrder": "Bestellung suchen",
+  "closeOrder": "Bestellung schließen",
+  "myNotes": "Meine Notizen",
+  "clientNotes": "Kundennotizen",
+  "notesUnavailable": "Notizen nicht verfügbar"
+
 
 
 

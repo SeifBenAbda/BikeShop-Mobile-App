@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import '../../../models/client_service_class.dart';
 import '../Fix Bicycle/fix_bike_vars.dart';
 import '../Profile/client_profile_page.dart';
-import '../Service Menu/ItemsSliderWidget.dart';
+import '../../../widgets/ItemsSliderWidget.dart';
 import '../../../widgets/bottom_nav.dart';
 import '../Service Menu/clientServiceWidget.dart';
 import 'client_home_fun.dart';
