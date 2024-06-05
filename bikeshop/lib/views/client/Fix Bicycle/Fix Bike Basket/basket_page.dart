@@ -62,7 +62,7 @@ class _BasketPageState extends State<BasketPage> {
         Flexible(child: listOfOrderServices()),
         Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           const SizedBox(
-            width: 10,
+            height: 10,
           ),
           seperator(),
           const SizedBox(height: 10),

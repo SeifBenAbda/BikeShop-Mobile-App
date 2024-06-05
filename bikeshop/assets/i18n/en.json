@@ -72,7 +72,25 @@
   "myNotes": "My Notes",
   "clientNotes": "Client Notes",
   "notesUnavailable": "Notes unavailable",
-  "updateOrder": "Update Order"
+  "updateOrder": "Update Order",
+  "orderClosed": "This Order is Closed",
+  "startOrderFirst": "You need to Start this Order First!",
+  "changeParts": "Change Parts",
+  "request": "Request",
+  "alreadyRequested": "Already Requested",
+  "stock": "Stock",
+  "orderDay": "Order Day",
+  "notes": "Notes",
+  "workerNotes": "Worker Notes",
+  "updateNotes": "Update Notes",
+  "acceptAndPay": "Accept and Pay",
+  "decline": "Decline",
+  "notesUpdatedSuccess": "Your Notes are Updated Successfully",
+  "requestRejected": "Request Rejected",
+  "requestAccepted": "Request Accepted",
+  "requestPending": "Request Pending",
+  "cancelRequest": "Cancel Request"
+
 
 
 

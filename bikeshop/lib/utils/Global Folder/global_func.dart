@@ -34,6 +34,7 @@ void showError(BuildContext context, String errorMsg) {
       errorMsg,
       style: getTextStyleAbel(14, greyColor),
     ),
+    closeOnClick: true,
     backgroundColor: blueColor,
     autoCloseDuration: const Duration(seconds: 5),
   );

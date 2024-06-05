@@ -87,7 +87,7 @@ class _WorkerOpenOrdersState extends State<WorkerOpenOrders> {
         list: openedOrders,
         slidingWidget: openOrderWidget,
         sliderContentWidth: MediaQuery.of(context).size.width / 1.3,
-        sliderContentHeight: 200,
+        sliderContentHeight: 220,
       );
     });
   }
@@ -100,8 +100,11 @@ class _WorkerOpenOrdersState extends State<WorkerOpenOrders> {
           padding: const EdgeInsets.all(8),
           decoration: getBoxDeco(15, blueColor),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              orderIdAndNumberOfServices(openedOrderIndex),
+              Column(
+                children: [
+                  orderIdAndNumberOfServices(openedOrderIndex),
               const SizedBox(
                 height: 10,
               ),
@@ -109,10 +112,9 @@ class _WorkerOpenOrdersState extends State<WorkerOpenOrders> {
               const SizedBox(
                 height: 15,
               ),
-              addToWorkerTasksButton(openedOrderIndex),
-              const SizedBox(
-                height: 5,
+                ],
               ),
+              addToWorkerTasksButton(openedOrderIndex),
             ],
           )),
     );
@@ -193,21 +195,26 @@ class _WorkerOpenOrdersState extends State<WorkerOpenOrders> {
   }
 
   Widget addToWorkerTasksButton(int openedOrderIndex) {
-    return GestureDetector(
-      onTap: () {
-        setupOrderToWorker(openedOrderIndex);
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width / 1.7,
-        height: 30,
-        decoration: getBoxDeco(5, greyColor),
-        child: Center(
-          child: Text(
-            getText(context, "addToMyTasks"),
-            style: getTextStyleAbel(10, blueColor),
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setupOrderToWorker(openedOrderIndex);
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width / 1.7,
+            height: 30,
+            decoration: getBoxDeco(5, greyColor),
+            child: Center(
+              child: Text(
+                getText(context, "addToMyTasks"),
+                style: getTextStyleAbel(13, blueColor),
+              ),
+            ),
           ),
         ),
-      ),
+        const SizedBox(height: 10,),
+      ],
     );
   }
 

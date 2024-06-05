@@ -13,8 +13,7 @@ class GoBackButton extends StatefulWidget {
 class _GoBackButtonState extends State<GoBackButton> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      highlightColor: Colors.transparent,
+    return GestureDetector(
       onTap: () {
         widget.callBack();
       },

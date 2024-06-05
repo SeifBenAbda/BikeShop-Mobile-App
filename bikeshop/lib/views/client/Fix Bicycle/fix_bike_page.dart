@@ -37,9 +37,7 @@ class _FixBikePageState extends State<FixBikePage> {
               height: 30,
             ),
             topContainerFixBike(),
-            const SizedBox(
-              height: 10,
-            ),
+           
             ValueListenableBuilder(
                 valueListenable: isBasketBikeFixActive,
                 builder: (context, value, _) {
@@ -54,7 +52,7 @@ class _FixBikePageState extends State<FixBikePage> {
 
   Widget topContainerFixBike() {
     return SizedBox(
-      height: 60,
+      //height: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

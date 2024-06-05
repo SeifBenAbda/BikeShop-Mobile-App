@@ -25,6 +25,10 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
   double orderContainerHeight = 210;
   List<Order> ordersList = [];
   bool isReady = false;
+  var currentOrderSlected;
+
+
+  
   @override
   void initState() {
     super.initState();
@@ -35,6 +39,7 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
   Widget build(BuildContext context) {
     return SizedBox(
         height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         child: Stack(
           children: [mainOrdersWidget(), loadingWidget(isOrdersLoading)],
         ));
@@ -42,24 +47,29 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
 
   //-- Main Orders Widget-------------//
   Widget mainOrdersWidget() {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 30,
-        ),
-        topContainerTrackOrders(),
-        const SizedBox(
-          height: 30,
-        ),
-        ValueListenableBuilder(
-            valueListenable: isOrderDetailsPressed,
-            builder: (context, value, _) {
-              if (isOrderDetailsPressed.value) {
-                return const OrderDetailsClient();
-              }
-              return mainOrderTrackingWidget();
-            })
-      ],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 30,
+          ),
+          topContainerTrackOrders(),
+          const SizedBox(
+            height: 30,
+          ),
+          ValueListenableBuilder(
+              valueListenable: isOrderDetailsPressed,
+              builder: (context, value, _) {
+                if (isOrderDetailsPressed.value) {
+                  return OrderDetailsClient(
+                    order: currentOrderSlected,
+                  );
+                }
+                return mainOrderTrackingWidget();
+              })
+        ],
+      ),
     );
   }
 
@@ -93,16 +103,11 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
         // Show a loading indicator or empty state if no clients are available
         return Container();
       }
-      return Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width / 1.1,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                for (int i = 0; i < ordersList.length; i++) orderBigContainer(i)
-              ],
-            ),
-          ),
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            for (int i = 0; i < ordersList.length; i++) orderBigContainer(i)
+          ],
         ),
       );
     });
@@ -120,7 +125,7 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   firstPartContainer(orderIndex),
-                  seeOrderDetailsBtn()
+                  seeOrderDetailsBtn(orderIndex)
                 ],
               )),
           const SizedBox(
@@ -131,9 +136,14 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
     );
   }
 
-  Widget seeOrderDetailsBtn() {
+  Widget seeOrderDetailsBtn(int orderIndex) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        setState(() {
+          currentOrderSlected = ordersList.elementAt(orderIndex);
+          isOrderDetailsPressed.value = true;
+        });
+      },
       child: Container(
         decoration: getBoxDeco(12, blueColor),
         width: 50,
@@ -172,9 +182,18 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
   }
 
   Widget orderIdWidget(int orderIndex) {
-    return AutoSizeText(
-      ordersList.elementAt(orderIndex).orderId,
-      style: getTextStyleAbel(16, blueColor),
+    return Row(
+      children: [
+        Image.asset("assets/images/order.png",height: 35,width: 35,),
+        const SizedBox(width: 10,),
+        SizedBox(
+          width: MediaQuery.of(context).size.width/1.8,
+          child: AutoSizeText(
+            ordersList.elementAt(orderIndex).orderId,
+            style: getTextStyleAbel(16, blueColor),
+          ),
+        ),
+      ],
     );
   }
 
@@ -283,8 +302,8 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
   //-----Top Container Track Orders Page -------------------//
   Widget topContainerTrackOrders() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.1,
       //height: 60,
+      width: MediaQuery.of(context).size.width / 1.1,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

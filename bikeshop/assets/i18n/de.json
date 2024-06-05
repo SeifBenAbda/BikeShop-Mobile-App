@@ -72,8 +72,24 @@
   "myNotes": "Meine Notizen",
   "clientNotes": "Kundennotizen",
   "notesUnavailable": "Notizen nicht verfügbar",
-  "updateOrder": "Bestellung aktualisieren"
-
+  "updateOrder": "Bestellung aktualisieren",
+  "orderClosed": "Diese Bestellung ist geschlossen",
+  "startOrderFirst": "Sie müssen diese Bestellung zuerst starten!",
+  "changeParts": "Teile ändern",
+  "request": "Anfrage",
+  "alreadyRequested": "Bereits angefragt",
+  "stock": "Bestand",
+  "orderDay": "Bestelltag",
+  "notes": "Notizen",
+  "workerNotes": "Arbeiternotizen",
+  "updateNotes": "Notizen aktualisieren",
+  "acceptAndPay": "Akzeptieren und bezahlen",
+  "decline": "Ablehnen",
+  "notesUpdatedSuccess": "Ihre Notizen wurden erfolgreich aktualisiert",
+  "requestRejected": "Anfrage abgelehnt",
+  "requestAccepted": "Anfrage akzeptiert",
+  "requestPending": "Anfrage ausstehend",
+  "cancelRequest": "Anfrage stornieren"
 
 
 

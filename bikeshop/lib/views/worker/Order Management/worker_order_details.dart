@@ -1,14 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bikeshop/models/shop_service_class.dart';
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
+import 'package:bikeshop/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/order_class.dart';
+import '../../../services/order_service.dart';
 import '../../../services/providers/order_providers.dart';
 import '../../../utils/Global Folder/glaobal_vars.dart';
 import '../../../utils/Global Folder/global_func.dart';
 import '../worker_shared_func.dart';
 import 'worker_orders_vars.dart';
+import 'worker_parts_change.dart';
 
 class WorderOrderDetails extends StatefulWidget {
   final Order order;
@@ -19,44 +22,51 @@ class WorderOrderDetails extends StatefulWidget {
 }
 
 class _WorderOrderDetailsState extends State<WorderOrderDetails> {
+  var isLoadingOrderDetails = ValueNotifier(false);
   @override
   void initState() {
     widget.order.orderedServices.value.forEach((element) {
       element.isFinished ??= ValueNotifier(false);
     });
+    workerCommentsController.text = "";
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height / 1.3,
-      child: Column(
-        children: [
-          orderDetailsWidget(widget.order), // This widget is fixed
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  servicesListWidget(widget.order),
-                  const SizedBox(height: 10),
-                  sepeartor(),
-                  const SizedBox(height: 10),
-                  clientNotesWidget(widget.order),
-                  const SizedBox(height: 10),
-                  workerNotesWidget(),
-                  const SizedBox(
-                    height: 10,
+    return Stack(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 1.3,
+          child: Column(
+            children: [
+              orderDetailsWidget(widget.order), // This widget is fixed
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      servicesListWidget(widget.order),
+                      const SizedBox(height: 10),
+                      sepeartor(),
+                      const SizedBox(height: 10),
+                      clientNotesWidget(widget.order),
+                      const SizedBox(height: 10),
+                      workerNotesWidget(widget.order),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+        loadingWidget(isLoadingOrderDetails)
+      ],
     );
   }
 
@@ -105,7 +115,6 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
           ),
           const Spacer(),
           updateOrderButton(order),
-
         ],
       ),
     );
@@ -192,26 +201,32 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
   Widget startFinishOrderBtn(Order order) {
     bool isCanceled = order.isCanceled!.value;
     bool isFinished = order.isFinished!.value;
-    bool isStarted = order.isStarted!.value && !isFinished;
-    bool notStarted = !isFinished && !isStarted;
-
-    if (!isCanceled) {
-      return GestureDetector(
-        onTap: () {},
-        child: Container(
-          height: 45,
-          width: MediaQuery.of(context).size.width / 1.3,
-          decoration:
-              notStarted ? getBoxDeco(8, greenColor2) : getBoxDeco(8, redColor),
-          child: Center(
-            child: Text(
-                notStarted
-                    ? getText(context, "startNow")
-                    : getText(context, "closeOrder"),
-                style: getTextStyleAbel(16, greyColor)),
-          ),
-        ),
-      );
+    if (!isCanceled && !isFinished) {
+      return ValueListenableBuilder(
+          valueListenable: order.isStarted!,
+          builder: (context, value, _) {
+            bool isStarted = order.isStarted!.value && !isFinished;
+            bool notStarted = !isFinished && !isStarted;
+            return GestureDetector(
+              onTap: () {
+                startFinishOrderFn(order, notStarted);
+              },
+              child: Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width / 1.3,
+                decoration: notStarted
+                    ? getBoxDeco(8, greenColor2)
+                    : getBoxDeco(8, redColor),
+                child: Center(
+                  child: Text(
+                      notStarted
+                          ? getText(context, "startNow")
+                          : getText(context, "closeOrder"),
+                      style: getTextStyleAbel(16, greyColor)),
+                ),
+              ),
+            );
+          });
     } else {
       return Container();
     }
@@ -226,11 +241,13 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
       return Container(
         height: 45,
         width: 70,
-        decoration:
-            getBoxDecoWithBorder(8, greyColor,blueColor),
+        decoration: getBoxDecoWithBorder(8, greyColor, blueColor),
         child: Center(
-          child: Image.asset("assets/images/updated.png",height: 35,width: 35,)
-        ),
+            child: Image.asset(
+          "assets/images/updated.png",
+          height: 35,
+          width: 35,
+        )),
       );
     } else {
       return Container();
@@ -257,23 +274,56 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              getText(context, "services"),
-              style: getTextStyleAbel(22, greyColor),
-            ),
-            Container(
-              height: 40,
-              width: 40,
-              decoration: getBoxDeco(8, greyColor2),
-              child: Center(
-                child: Text(
-                  "${order.orderedServices.value.length}",
-                  style: getTextStyleAbel(20, blueColor),
+            Row(
+              children: [
+                Text(
+                  getText(context, "services"),
+                  style: getTextStyleAbel(22, greyColor),
                 ),
-              ),
-            )
+                /*const SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  height: 40,
+                  width: 40,
+                  decoration: getBoxDeco(8, greyColor2),
+                  child: Center(
+                    child: Text(
+                      "${order.orderedServices.value.length}",
+                      style: getTextStyleAbel(20, blueColor),
+                    ),
+                  ),
+                )*/
+              ],
+            ),
+            changeItemsInOrderBtn(order)
           ],
         ));
+  }
+
+  //this opens Diaoge with Items and Request
+  Widget changeItemsInOrderBtn(Order order) {
+    return GestureDetector(
+      onTap: (){
+        if(order.isStarted!.value == true && !order.isFinished!.value){
+          showDialoge() ;
+        }else{
+          showError(
+              context,
+              order.isFinished!.value
+                  ? getText(context, "orderClosed")
+                  : getText(context, "startOrderFirst"));
+        }
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width/3.5,
+        height: 40,
+        decoration: getBoxDeco(8, greyColor2),
+        child: Center(
+          child: Text(getText(context, "changeParts"),style: getTextStyleAbel(14, blueColor),),
+        ),
+      ),
+    );
   }
 
   Widget listOfServicesWidget(Order order) {
@@ -284,7 +334,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
           return Column(
             children: [
               orderServiceDetailWidget(
-                  order.orderedServices.value.elementAt(index)),
+                  order.orderedServices.value.elementAt(index), order),
               const SizedBox(
                 height: 10,
               ),
@@ -293,17 +343,25 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
         });
   }
 
-  Widget orderServiceDetailWidget(ShopService orderService) {
+  Widget orderServiceDetailWidget(ShopService orderService, Order order) {
     String serviceName = currentFallBackFile.value == "en"
         ? orderService.serviceName
         : orderService.serviceNameGerman;
 
     return GestureDetector(
       onDoubleTap: () {
-        setState(() {
-          orderService.isFinished =
-              ValueNotifier(!orderService.isFinished!.value);
-        });
+        if (order.isStarted!.value == true && !order.isFinished!.value) {
+          setState(() {
+            orderService.isFinished =
+                ValueNotifier(!orderService.isFinished!.value);
+          });
+        } else {
+          showError(
+              context,
+              order.isFinished!.value
+                  ? getText(context, "orderClosed")
+                  : getText(context, "startOrderFirst"));
+        }
       },
       child: Container(
           padding: const EdgeInsets.all(8),
@@ -425,7 +483,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
   }
 
   //---Worker Notes
-  Widget workerNotesWidget() {
+  Widget workerNotesWidget(Order order) {
     return SizedBox(
       width: MediaQuery.of(context).size.width / 1.1,
       child: Column(
@@ -446,13 +504,20 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: TextFormField(
+                enabled: !order.isFinished!.value,
                 minLines: 1,
                 maxLines: null,
                 keyboardType: TextInputType.text,
-                controller: workerCommentsController,
+                //controller: workerCommentsController,
+                initialValue: order.workerComments!.value,
                 autofocus: false,
                 style: getTextStyleWhiteFjallone(15),
                 cursorColor: cursorTextFieldColor3,
+                onChanged: (value) {
+                  setState(() {
+                    workerCommentsController.text = value;
+                  });
+                },
                 decoration: InputDecoration(
                     focusedBorder: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -475,4 +540,58 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
       ),
     );
   }
+
+  //---- Useful Functions----------------------//
+  void startFinishOrderFn(Order order, bool isStarted) async {
+    isLoadingOrder(true);
+    order.workerComments!.value = workerCommentsController.text == ""
+        ? order.workerComments!.value
+        : workerCommentsController.text;
+    OrderService os = OrderService();
+    await setupStartAndEndTimeOfOrder(order, isStarted).then(((value) async {
+      await os.updateOrderToServer(order).then((value) {
+        isLoadingOrder(false);
+      });
+    }));
+  }
+
+  void isLoadingOrder(bool isLoading) {
+    setState(() {
+      isLoadingOrderDetails.value = isLoading;
+    });
+  }
+
+  Future<void> setupStartAndEndTimeOfOrder(Order order, bool isStarted) async {
+    DateTime? currentStartedTime = order.startedAt;
+    if (isStarted) {
+      print("I am Starting");
+      setState(() {
+        order.isStarted!.value = true;
+        order.isFinished!.value = false;
+        order.startedAt = DateTime.now();
+        order.finishedAt = null;
+      });
+    } else {
+      print("I am Finishing");
+      setState(() {
+        order.isFinished!.value = true;
+        order.finishedAt = DateTime.now();
+        order.startedAt = currentStartedTime;
+      });
+    }
+  }
+
+
+  void showDialoge(){
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width,
+        ),
+        builder: (context) {
+          return WorkerOrderPartsChange(order: widget.order,);
+        });
+  }
+
 }

@@ -6,9 +6,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../views/worker/Order Management/worker_all_orders.dart';
 import 'superbase_service.dart';
+import 'package:intl/intl.dart';
 
 class OrderService {
   final SupabaseService _supabaseService = SupabaseService();
+
+  
+
+  //--------------Send Order to Server From Client--------------------------//
 
   Future<bool> sendOrderToServer(Order order) async {
     final client = _supabaseService.getSuperbaseClient();
@@ -55,6 +60,8 @@ class OrderService {
     return true;
   }
 
+  //----Client Orders Getting-----------------------------------//
+
   Future<List<Order>> getUserOrdersWithServiceCount() async {
     List<Order> orderList = [];
     try {
@@ -64,7 +71,7 @@ class OrderService {
           await client.from("user_order").select().eq("user_id", userId);
 
       for (var userOrder in response) {
-        Order order = createOrder(userOrder);
+        Order order = createOrder(userOrder,true);
         orderList.add(order);
       }
     } catch (error) {
@@ -75,7 +82,7 @@ class OrderService {
     return orderList;
   }
 
-  //This returns the List of orders that a Worker can access when the worker_id is null
+  //----------------This returns the List of orders that a Worker can access when the worker_id is null--------------------------//
   Future<List<Order>> getOpenedOrders() async {
     List<Order> orderList = [];
 
@@ -84,7 +91,7 @@ class OrderService {
       final response =
           await client.from("user_order").select().eq("isAvailable", true);
       for (var userOrder in response) {
-        Order order = createOrder(userOrder);
+        Order order = createOrder(userOrder,true);
         orderList.add(order);
       }
     } catch (error) {
@@ -93,6 +100,8 @@ class OrderService {
 
     return orderList;
   }
+
+  //-------------------Assign an Open Order to a Worker -------------------------------//
 
   Future<void> assignOrderToWorker(Order order) async {
     try {
@@ -107,7 +116,7 @@ class OrderService {
     }
   }
 
-  //-- get today's tasks for specific Worker
+  //-- ------------------Get today's tasks for specific Worker------------------------//
   Future<List<Order>> getTodayOrderToWorker() async {
     List<Order> orderList = [];
     try {
@@ -119,7 +128,7 @@ class OrderService {
       });
 
       for (var userOrder in response) {
-        Order order = createOrder(userOrder);
+        Order order = createOrder(userOrder,false);
         orderList.add(order);
       }
     } catch (error) {
@@ -129,13 +138,15 @@ class OrderService {
     return orderList;
   }
 
+  //------------ Get All Orders Detailles (With Services) From Datababase---------------------//
+
   List<Order> orderList = [];
   Future<List<Order>> getOrdersDetailled() async {
     try {
       final client = _supabaseService.getSuperbaseClient();
       final response = await client.rpc('get_all_orders_detailled');
       for (var userOrder in response) {
-        Order order = createOrder(userOrder);
+        Order order = createOrder(userOrder,false);
         int orderIndex =
             orderList.indexWhere((element) => element.orderId == order.orderId);
         if (orderIndex == -1) {
@@ -148,13 +159,13 @@ class OrderService {
         }
       }
     } catch (error) {
-      print("Error: $error");
+      print("Errorssssssssssssss: $error");
     }
 
     return orderList;
   }
 
-  //--- get All Worker Tasks --------------------
+  //------------------ get All Worker Tasks (With Services) From Database --------------------//
   List<Order> workerOrders = allOrdersWorker;
   Future<List<Order>> getWorkerAllOrdersWithServices() async {
     try {
@@ -165,7 +176,7 @@ class OrderService {
       });
 
       for (var userOrder in response) {
-        Order order = createOrder(userOrder);
+        Order order = createOrder(userOrder,false);
         int orderIndex = workerOrders
             .indexWhere((element) => element.orderId == order.orderId);
         if (orderIndex == -1) {
@@ -187,6 +198,8 @@ class OrderService {
 
     return workerOrders;
   }
+
+  //------ Adding / Modifiying Existing Services Within an Order-----------------------//
 
   void modifyOrderServices(
       Order order, dynamic userOrder, bool orderExists, Order? existingOrder) {
@@ -220,7 +233,9 @@ class OrderService {
     return result;
   }
 
-  Order createOrder(dynamic userOrder) {
+  //---------------- Creating an Order Instance fron Json Data-----------------------//
+
+  Order createOrder(dynamic userOrder,bool isClientRequest) {
     Order order = Order(
         orderId: userOrder["order_id"].toString(),
         orderUserId: userOrder["user_id"].toString(),
@@ -234,15 +249,17 @@ class OrderService {
             DateTime.parse(userOrder["appointment_day"].toString())),
         isFinished:
             ValueNotifier(userOrder["is_finished"].toString() == "true"),
-        finishedAt: userOrder["finished_at"].toString() == "null"
+        finishedAt: userOrder["finished_at"].toString().toLowerCase() == "null"
             ? null
-            : DateTime.parse(userOrder["finished_at"].toString()),
+            : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
+                .parse(userOrder["finished_at"].toString()),
         workerId: userOrder["worker_id"].toString(),
-        workerComments: ValueNotifier(userOrder["comments"].toString()),
+        workerComments: ValueNotifier(userOrder["worker_comments"].toString()),
         isStarted: ValueNotifier(userOrder["is_started"].toString() == "true"),
-        startedAt: userOrder["started_at"].toString() == "null"
+        startedAt: userOrder["started_at"].toString().toLowerCase() == "null"
             ? null
-            : DateTime.parse(userOrder["started_at"].toString()),
+            : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
+                .parse(userOrder["started_at"].toString()),
         isCanceled:
             ValueNotifier(userOrder["is_canceled"].toString() == "true"),
         canceledAt: null,
@@ -250,11 +267,13 @@ class OrderService {
         orderDate:
             ValueNotifier(DateTime.parse(userOrder["order_date"].toString())),
         serviceCount: userOrder["service_count"],
-        orderOwnerName:
+        orderOwnerName:isClientRequest?null:
             userOrder["user_last_name"] + " " + userOrder["user_first_name"]);
 
     return order;
   }
+
+  //-------------- Updating Order  - Targetting Special Attributes in Class Order------------//
 
   void updateOrder(dynamic userOrder, Order existingOrder) {
     existingOrder.workerId = userOrder["worker_id"].toString();
@@ -265,21 +284,82 @@ class OrderService {
     existingOrder.isFinished =
         ValueNotifier(userOrder["is_finished"].toString() == "true");
 
-    existingOrder.finishedAt = userOrder["finished_at"].toString() == "null"
-        ? null
-        : DateTime.parse(userOrder["finished_at"].toString());
+    existingOrder.finishedAt =
+        userOrder["finished_at"].toString().toLowerCase() == "null"
+            ? null
+            : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
+                .parse(userOrder["finished_at"].toString());
 
     existingOrder.workerComments =
-        ValueNotifier(userOrder["comments"].toString());
+        ValueNotifier(userOrder["worker_comments"].toString());
 
     existingOrder.isStarted =
         ValueNotifier(userOrder["is_started"].toString() == "true");
 
-    existingOrder.startedAt = userOrder["started_at"].toString() == "null"
-        ? null
-        : DateTime.parse(userOrder["finished_at"].toString());
+   /* existingOrder.startedAt =
+        userOrder["started_at"].toString().toLowerCase() == "null"
+            ? null
+            : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
+                .parse(userOrder["started_at"].toString());*/
 
     existingOrder.isCanceled =
         ValueNotifier(userOrder["is_canceled"].toString() == "true");
+  }
+
+  //--------------Worker Updating a Specific Order------------------------//
+  Future<bool> updateOrderToServer(Order order) async {
+    print("Strating time : ${order.startedAt.toString()}");
+    print(order.workerComments!.value.toString());
+    final client = _supabaseService.getSuperbaseClient();
+    final workerId = client.auth.currentUser!.id;
+    bool isFinished = order.isFinished!.value;
+    bool isStarted = order.isStarted!.value;
+    dynamic startedAt = order.startedAt.toString();
+    dynamic finishedAt = order.finishedAt.toString();
+    Map<String, dynamic> orderData = {
+      "worker_comments": order.workerComments!.value.toString(),
+      "isAvailable": false.toString(),
+      "is_started": isStarted.toString(),
+      "started_at": startedAt == "null" ? null : startedAt,
+      "is_finished": isFinished.toString(),
+      "finished_at": finishedAt == "null" ? null : finishedAt,
+    };
+
+    // Insert the order data
+    try {
+      await client.from('user_order').update(orderData).match({
+        'order_id': order.orderId.toString(),
+        'worker_id': workerId.toString()
+      });
+    } on FunctionException catch (error) {
+      print('Error invoking function: $error');
+    } catch (error) {
+      print('Error updating order: $error');
+    }
+
+    return true;
+  }
+
+
+
+  //--------------Client Updating Order Comments -----------------------------//
+  Future<bool> updateClientOrderComments(Order order) async {
+     final client = _supabaseService.getSuperbaseClient();
+    Map<String, dynamic> orderData = {
+     "comment":order.orderComment.text,
+    };
+
+    // Insert the order data
+    try {
+      await client.from('user_order').update(orderData).match({
+        'order_id': order.orderId.toString(),
+      });
+    } on FunctionException catch (error) {
+      print('Error invoking function: $error');
+    } catch (error) {
+      print('Error updating order client comments: $error');
+    }
+
+    return true;
   }
 }
