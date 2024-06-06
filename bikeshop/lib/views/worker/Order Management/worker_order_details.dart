@@ -260,6 +260,9 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
     return Column(
       children: [
         servicesNumber(order),
+        const SizedBox(
+          height: 10,
+        ),
         listOfServicesWidget(order),
         const SizedBox(
           height: 10,
@@ -304,10 +307,10 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
   //this opens Diaoge with Items and Request
   Widget changeItemsInOrderBtn(Order order) {
     return GestureDetector(
-      onTap: (){
-        if(order.isStarted!.value == true && !order.isFinished!.value){
-          showDialoge() ;
-        }else{
+      onTap: () {
+        if (order.isStarted!.value == true && !order.isFinished!.value) {
+          showDialoge();
+        } else {
           showError(
               context,
               order.isFinished!.value
@@ -316,31 +319,34 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
         }
       },
       child: Container(
-        width: MediaQuery.of(context).size.width/3.5,
+        width: MediaQuery.of(context).size.width / 3.5,
         height: 40,
         decoration: getBoxDeco(8, greyColor2),
         child: Center(
-          child: Text(getText(context, "changeParts"),style: getTextStyleAbel(14, blueColor),),
+          child: Text(
+            getText(context, "changeParts"),
+            style: getTextStyleAbel(14, blueColor),
+          ),
         ),
       ),
     );
   }
 
   Widget listOfServicesWidget(Order order) {
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: order.orderedServices.value.length,
-        itemBuilder: (context, index) {
-          return Column(
+    return Column(
+      children: [
+        for(int i = 0 ; i<order.orderedServices.value.length;i++)
+          Column(
             children: [
               orderServiceDetailWidget(
-                  order.orderedServices.value.elementAt(index), order),
+                  order.orderedServices.value.elementAt(i), order),
               const SizedBox(
                 height: 10,
               ),
             ],
-          );
-        });
+          )
+      ],
+    );
   }
 
   Widget orderServiceDetailWidget(ShopService orderService, Order order) {
@@ -581,8 +587,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
     }
   }
 
-
-  void showDialoge(){
+  void showDialoge() {
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
@@ -590,8 +595,9 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
           maxWidth: MediaQuery.of(context).size.width,
         ),
         builder: (context) {
-          return WorkerOrderPartsChange(order: widget.order,);
+          return WorkerOrderPartsChange(
+            order: widget.order,
+          );
         });
   }
-
 }

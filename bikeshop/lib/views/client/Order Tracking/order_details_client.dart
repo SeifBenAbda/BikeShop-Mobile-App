@@ -10,6 +10,7 @@ import '../../../models/order_class.dart';
 import '../../../services/providers/clientOrders_provider.dart';
 import 'order_tracking_item_change.dart';
 import 'order_tracking_notes.dart';
+import 'order_tracking_qrcode.dart';
 import 'order_tracking_vars.dart';
 
 class OrderDetailsClient extends StatefulWidget {
@@ -40,19 +41,20 @@ class _OrderDetailsClientState extends State<OrderDetailsClient> {
       );
     } else {
       return Consumer<ClientOrdersProvider>(
-        builder: (context, clientOrdersProvider, _) {
-      Order myOrder = clientOrdersProvider.clientOrders.where((order) => order.orderId==widget.order.orderId).first;
-      return Expanded(
-        child: Column(
-          children: [
-            orderDetailsTopContainer(myOrder),
-            const SizedBox(height: 10),
-            Expanded(child: tabWidget(myOrder))
-          ],
-        ),
-      );
-    });
-      
+          builder: (context, clientOrdersProvider, _) {
+        Order myOrder = clientOrdersProvider.clientOrders
+            .where((order) => order.orderId == widget.order.orderId)
+            .first;
+        return Expanded(
+          child: Column(
+            children: [
+              orderDetailsTopContainer(myOrder),
+              const SizedBox(height: 10),
+              Expanded(child: tabWidget(myOrder))
+            ],
+          ),
+        );
+      });
     }
   }
 
@@ -114,12 +116,17 @@ class _OrderDetailsClientState extends State<OrderDetailsClient> {
   }
 
   Widget qrCodeScannerWidget(Order order) {
-    return SizedBox(
-      child: Center(
-        child: Image.asset(
-          "assets/images/qr-code.png",
-          height: 45,
-          width: 45,
+    return GestureDetector(
+      onTap: () {
+        showDialoge();
+      },
+      child: SizedBox(
+        child: Center(
+          child: Image.asset(
+            "assets/images/qr-code.png",
+            height: 45,
+            width: 45,
+          ),
         ),
       ),
     );
@@ -281,7 +288,9 @@ class _OrderDetailsClientState extends State<OrderDetailsClient> {
                   OrderTrackerNotes(
                     order: order,
                   ),
-                  OrderTrackingItemChange(order: order,)
+                  OrderTrackingItemChange(
+                    order: order,
+                  )
                 ],
               ),
             ),
@@ -336,5 +345,20 @@ class _OrderDetailsClientState extends State<OrderDetailsClient> {
                 )),
           ],
         ));
+  }
+
+  //--show Bottom Bar that Contains Qr Code
+  void showDialoge() {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width,
+        ),
+        builder: (context) {
+          return OrderTrackingQrCode(
+            order: widget.order,
+          );
+        });
   }
 }

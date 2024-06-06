@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bikeshop/widgets/goBack_Btn.dart';
 import 'package:flutter/material.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:provider/provider.dart';
 
 import '../../../main.dart';
@@ -87,7 +88,7 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
         const SizedBox(
           height: 10,
         ),
-        Expanded(child: allOrderMainWidget()),
+        allOrderMainWidget(),
       ],
     );
   }
@@ -108,7 +109,7 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
         ),
       );
     } else {
-      return openOrderListWidget();
+      return Expanded(child: openOrderListWidget());
     }
   }
 
@@ -127,19 +128,21 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
         width: MediaQuery.of(context).size.width / 1.1,
         child: ScrollConfiguration(
           behavior: MyBehavior(),
-          child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: currentOrdersWorker.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    orderServiceWidget(currentOrdersWorker.elementAt(index)),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                );
-              }),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                for (int i = 0 ; i<currentOrdersWorker.length ; i++)
+                  Column(
+                    children: [
+                      orderServiceWidget(currentOrdersWorker.elementAt(i)),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  )
+              ],
+            ),
+          )
         ),
       );
     });
@@ -402,6 +405,9 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
 
   Widget scanOrderQrCodeBtn() {
     return GestureDetector(
+      onTap: () {
+        scanQrCodeFunction();
+      },
       child: SizedBox(
         height: 50,
         width: 50,
@@ -410,6 +416,22 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
             "assets/images/qr-code.png",
             height: 50,
             width: 50,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget orderQrCodeWidget() {
+    Order order = currentOrdersWorker.elementAt(currentOrderIdDetails.value);
+    return SizedBox(
+      height: 300,
+      width: 300,
+      child: PrettyQrView.data(
+        data: "${order.orderId}_finish",
+        decoration: const PrettyQrDecoration(
+          shape: PrettyQrSmoothSymbol(
+            color: blueColor,
           ),
         ),
       ),
@@ -425,5 +447,45 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
     } else {
       setState(() {});
     }
+  }
+
+  void scanQrCodeFunction() {
+    if (isOrderDetailsPressed.value) {
+      showQrCode();
+    }
+  }
+
+  void showQrCode() {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width,
+        ),
+        builder: (context) {
+          return Container(
+            padding: const EdgeInsets.all(8),
+            decoration: getBoxDeco(12, greyColor),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height/2.2,
+            child: Column(
+              children: [
+                orderQrCodeWidget(),
+                const SizedBox(
+                  height: 15,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.1,
+                  child: Center(
+                      child: AutoSizeText(
+                    getText(context, "orderOwnerScanQR"),
+                    style: getTextStyleAbel(12, blueColor),
+                    textAlign: TextAlign.center,
+                  )),
+                )
+              ],
+            ),
+          );
+        });
   }
 }

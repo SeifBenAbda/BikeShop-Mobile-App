@@ -89,7 +89,10 @@
   "requestRejected": "Request Rejected",
   "requestAccepted": "Request Accepted",
   "requestPending": "Request Pending",
-  "cancelRequest": "Cancel Request"
+  "cancelRequest": "Cancel Request",
+  "scanQRCode": "Scan QR Code",
+  "closeOrderInfo": "By Clicking on 'Close Order' you will use your Phone Camera to Scan the Code on the Worker Phone",
+  "orderOwnerScanQR": "Order Owner Needs to Scan this QR Code to Close the Order"
 
 
 

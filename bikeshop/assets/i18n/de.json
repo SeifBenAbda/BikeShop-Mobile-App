@@ -89,7 +89,10 @@
   "requestRejected": "Anfrage abgelehnt",
   "requestAccepted": "Anfrage akzeptiert",
   "requestPending": "Anfrage ausstehend",
-  "cancelRequest": "Anfrage stornieren"
+  "cancelRequest": "Anfrage stornieren",
+  "scanQRCode": "QR-Code scannen",
+  "closeOrderInfo": "Wenn Sie auf 'Bestellung schließen' klicken, verwenden Sie Ihre Handykamera, um den Code auf dem Telefon des Arbeiters zu scannen",
+  "orderOwnerScanQR": "Bestellbesitzer muss diesen QR-Code scannen, um die Bestellung zu schließen"
 
 
 
