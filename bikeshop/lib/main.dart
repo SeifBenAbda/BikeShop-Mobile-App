@@ -17,9 +17,9 @@ import 'services/providers/connectitvity_provider.dart';
 import 'services/providers/order_providers.dart';
 import 'services/superbase_service.dart';
 import 'utils/Global Folder/global_deco.dart';
-import 'utils/device_checker.dart';
 import 'utils/storage/storage.dart';
 import 'utils/theme/theme.dart';
+import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +41,7 @@ void main() async {
     ChangeNotifierProvider<ShopServiceProvider>(
       create: (context) => ShopServiceProvider(),
     ),
-     ChangeNotifierProvider<ClientOrdersProvider>(
+    ChangeNotifierProvider<ClientOrdersProvider>(
       create: (context) => ClientOrdersProvider(),
     ),
     ChangeNotifierProvider<OrdersProvider>(
@@ -53,13 +53,9 @@ void main() async {
     ChangeNotifierProvider<WorkerAllOrdersProvider>(
       create: (context) => WorkerAllOrdersProvider(),
     ),
-     ChangeNotifierProvider<ItemsProvider>(
+    ChangeNotifierProvider<ItemsProvider>(
       create: (context) => ItemsProvider(),
     ),
-
-    
-    
-    
   ], child: const MyApp()));
 }
 
@@ -69,33 +65,32 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    DeviceType deviceType = DeviceDetector.getDeviceType(context);
-
-    myDeviceType.value = deviceType;
-    return GetMaterialApp(
-      locale: const Locale('de'), // Set the default locale to German
-      localizationsDelegates: [
-        FlutterI18nDelegate(
-          translationLoader: FileTranslationLoader(
-            fallbackFile: 'de',
-            basePath: 'assets/i18n',
+    return Sizer(builder: (context, orientation, deviceType) {
+      return GetMaterialApp(
+        locale: const Locale('de'), // Set the default locale to German
+        localizationsDelegates: [
+          FlutterI18nDelegate(
+            translationLoader: FileTranslationLoader(
+              fallbackFile: 'de',
+              basePath: 'assets/i18n',
+            ),
           ),
-        ),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('de'),
-        Locale('en'),
-      ],
-      debugShowCheckedModeBanner: false,
-      title: 'BIKE HCI',
-      theme: theme,
-      getPages: Routes.routes,
-      defaultTransition: Transition.noTransition,
-      initialRoute:
-          Storage.userSession != null ? RouteNames.home : RouteNames.login,
-    );
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('de'),
+          Locale('en'),
+        ],
+        debugShowCheckedModeBanner: false,
+        title: 'BIKE HCI',
+        theme: theme,
+        getPages: Routes.routes,
+        defaultTransition: Transition.noTransition,
+        initialRoute:
+            Storage.userSession != null ? RouteNames.home : RouteNames.login,
+      );
+    });
   }
 }
 

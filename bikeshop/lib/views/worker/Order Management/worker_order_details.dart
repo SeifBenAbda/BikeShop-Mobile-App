@@ -4,6 +4,7 @@ import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:bikeshop/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import '../../../models/order_class.dart';
 import '../../../services/order_service.dart';
 import '../../../services/providers/order_providers.dart';
@@ -28,45 +29,48 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
     widget.order.orderedServices.value.forEach((element) {
       element.isFinished ??= ValueNotifier(false);
     });
-    workerCommentsController.text = "";
+    workerCommentsController.text = widget.order.workerComments!.value;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 1.3,
-          child: Column(
-            children: [
-              orderDetailsWidget(widget.order), // This widget is fixed
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      servicesListWidget(widget.order),
-                      const SizedBox(height: 10),
-                      sepeartor(),
-                      const SizedBox(height: 10),
-                      clientNotesWidget(widget.order),
-                      const SizedBox(height: 10),
-                      workerNotesWidget(widget.order),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.05,
+      child: Stack(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 1.3,
+            child: Column(
+              children: [
+                orderDetailsWidget(widget.order), // This widget is fixed
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        servicesListWidget(widget.order),
+                        const SizedBox(height: 10),
+                        sepeartor(),
+                        const SizedBox(height: 10),
+                        clientNotesWidget(widget.order),
+                        const SizedBox(height: 10),
+                        workerNotesWidget(widget.order),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        loadingWidget(isLoadingOrderDetails)
-      ],
+          loadingWidget(isLoadingOrderDetails)
+        ],
+      ),
     );
   }
 
@@ -91,7 +95,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
           const SizedBox(
             height: 20,
           ),
-          startFinishOrderBtn(order),
+          startUpdateOrderBtn(order),
         ],
       ),
     );
@@ -100,22 +104,12 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
   Widget orderIdWidget(Order order) {
     return SizedBox(
       width: MediaQuery.of(context).size.width / 1.2,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(
-            width: 10,
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 1.8,
-            child: AutoSizeText(
-              order.orderId,
-              style: getTextStyleAbel(18, blueColor),
-            ),
-          ),
-          const Spacer(),
-          updateOrderButton(order),
-        ],
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width / 1.6,
+        child: AutoSizeText(
+          order.orderId,
+          style: getTextStyleAbel(18, blueColor),
+        ),
       ),
     );
   }
@@ -198,30 +192,36 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
     );
   }
 
-  Widget startFinishOrderBtn(Order order) {
+  Widget startUpdateOrderBtn(Order order) {
     bool isCanceled = order.isCanceled!.value;
     bool isFinished = order.isFinished!.value;
+    
     if (!isCanceled && !isFinished) {
       return ValueListenableBuilder(
           valueListenable: order.isStarted!,
           builder: (context, value, _) {
             bool isStarted = order.isStarted!.value && !isFinished;
             bool notStarted = !isFinished && !isStarted;
+          
             return GestureDetector(
               onTap: () {
-                startFinishOrderFn(order, notStarted);
+                if (notStarted) {
+                  startFinishOrderFn(order, notStarted);
+                } else {
+                  updateNotesOrder(order);
+                }
               },
               child: Container(
                 height: 45,
                 width: MediaQuery.of(context).size.width / 1.3,
                 decoration: notStarted
                     ? getBoxDeco(8, greenColor2)
-                    : getBoxDeco(8, redColor),
+                    : getBoxDeco(8, blueColor),
                 child: Center(
                   child: Text(
                       notStarted
                           ? getText(context, "startNow")
-                          : getText(context, "closeOrder"),
+                          : getText(context, "updateNotes"),
                       style: getTextStyleAbel(16, greyColor)),
                 ),
               ),
@@ -240,13 +240,12 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
     if (!isCanceled && !isFinished && isStarted) {
       return Container(
         height: 45,
-        width: 70,
-        decoration: getBoxDecoWithBorder(8, greyColor, blueColor),
+        width: MediaQuery.of(context).size.width / 1.1,
+        decoration: getBoxDeco(8, blueColor),
         child: Center(
-            child: Image.asset(
-          "assets/images/updated.png",
-          height: 35,
-          width: 35,
+            child: Text(
+          getText(context, "updateNotes"),
+          style: getTextStyleAbel(17, greyColor),
         )),
       );
     } else {
@@ -335,7 +334,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
   Widget listOfServicesWidget(Order order) {
     return Column(
       children: [
-        for(int i = 0 ; i<order.orderedServices.value.length;i++)
+        for (int i = 0; i < order.orderedServices.value.length; i++)
           Column(
             children: [
               orderServiceDetailWidget(
@@ -491,11 +490,11 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
   //---Worker Notes
   Widget workerNotesWidget(Order order) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.1,
+      width: 90.w,
       child: Column(
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width / 1.1,
+            width: 90.w,
             child: Text(
               getText(context, "myNotes"),
               style: getTextStyleAbel(22, greyColor),
@@ -506,7 +505,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
           ),
           Container(
             decoration: getBoxDeco(10, optionConColor),
-            width: MediaQuery.of(context).size.width / 1.1,
+            width: 90.w,
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: TextFormField(
@@ -514,8 +513,8 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
                 minLines: 1,
                 maxLines: null,
                 keyboardType: TextInputType.text,
-                //controller: workerCommentsController,
-                initialValue: order.workerComments!.value,
+                controller: workerCommentsController,
+                //initialValue: order.workerComments!.value,
                 autofocus: false,
                 style: getTextStyleWhiteFjallone(15),
                 cursorColor: cursorTextFieldColor3,
@@ -561,6 +560,18 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
     }));
   }
 
+  void updateNotesOrder(Order order) async {
+    isLoadingOrder(true);
+    order.workerComments!.value = workerCommentsController.text == ""
+        ? order.workerComments!.value
+        : workerCommentsController.text;
+    OrderService os = OrderService();
+    await os.updateOrderToServer(order).then((value) {
+      isLoadingOrder(false);
+      showSucess(context, getText(context, "notesUpdatedSuccess"));
+    });
+  }
+
   void isLoadingOrder(bool isLoading) {
     setState(() {
       isLoadingOrderDetails.value = isLoading;
@@ -578,7 +589,7 @@ class _WorderOrderDetailsState extends State<WorderOrderDetails> {
         order.finishedAt = null;
       });
     } else {
-      print("I am Finishing");
+      print("I am Updating");
       setState(() {
         order.isFinished!.value = true;
         order.finishedAt = DateTime.now();

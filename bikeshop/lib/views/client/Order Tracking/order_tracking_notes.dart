@@ -4,6 +4,7 @@ import 'package:bikeshop/utils/Global%20Folder/global_func.dart';
 import 'package:bikeshop/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../models/order_class.dart';
 import '../../../services/providers/clientOrders_provider.dart';
@@ -120,11 +121,11 @@ class _OrderTrackerNotesState extends State<OrderTrackerNotes> {
     return Padding(
       padding: const EdgeInsets.only(left:8.0),
       child: SizedBox(
-        width: MediaQuery.of(context).size.width / 1.1,
+        width: 90.w,
         child: Column(
           children: [
             SizedBox(
-                width: MediaQuery.of(context).size.width / 1.1,
+                width: 90.w,
                 child: Text(
                   getText(context, "myNotes"),
                   style: getTextStyleAbel(20, greyColor),
@@ -134,7 +135,7 @@ class _OrderTrackerNotesState extends State<OrderTrackerNotes> {
             ),
             Container(
               decoration: getBoxDeco(10, optionConColor),
-              width: MediaQuery.of(context).size.width / 1.1,
+              width: 90.w,
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: TextFormField(

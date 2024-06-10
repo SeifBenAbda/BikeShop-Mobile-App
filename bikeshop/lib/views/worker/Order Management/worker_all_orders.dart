@@ -11,6 +11,7 @@ import '../../../utils/Global Folder/global_deco.dart';
 import '../../../utils/Global Folder/global_func.dart';
 import '../../../widgets/search_box.dart';
 import '../worker_shared_func.dart';
+import '../worker_vars.dart';
 import 'worker_order_details.dart';
 import 'worker_orders_vars.dart';
 
@@ -127,23 +128,22 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
       return SizedBox(
         width: MediaQuery.of(context).size.width / 1.1,
         child: ScrollConfiguration(
-          behavior: MyBehavior(),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                for (int i = 0 ; i<currentOrdersWorker.length ; i++)
-                  Column(
-                    children: [
-                      orderServiceWidget(currentOrdersWorker.elementAt(i)),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  )
-              ],
-            ),
-          )
-        ),
+            behavior: MyBehavior(),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (int i = 0; i < currentOrdersWorker.length; i++)
+                    Column(
+                      children: [
+                        orderServiceWidget(currentOrdersWorker.elementAt(i)),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    )
+                ],
+              ),
+            )),
       );
     });
   }
@@ -422,13 +422,12 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
     );
   }
 
-  Widget orderQrCodeWidget() {
-    Order order = currentOrdersWorker.elementAt(currentOrderIdDetails.value);
+  Widget orderQrCodeWidget(Order order) {
     return SizedBox(
       height: 300,
       width: 300,
       child: PrettyQrView.data(
-        data: "${order.orderId}_finish",
+        data: order.isFinished!.value?"${order.orderId}_reopen": "${order.orderId}_finish",
         decoration: const PrettyQrDecoration(
           shape: PrettyQrSmoothSymbol(
             color: blueColor,
@@ -445,7 +444,11 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
         isOrderDetailsPressed.value = false;
       });
     } else {
-      setState(() {});
+      setState(() {
+        currentWorkerScreen.value = "W_H";
+        isOrderDetailsPressed.value = false;
+        currentOrderIdDetails.value = -1;
+      });
     }
   }
 
@@ -456,6 +459,7 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
   }
 
   void showQrCode() {
+     Order order = currentOrdersWorker.elementAt(currentOrderIdDetails.value);
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
@@ -467,10 +471,10 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
             padding: const EdgeInsets.all(8),
             decoration: getBoxDeco(12, greyColor),
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height/2.2,
+            height: MediaQuery.of(context).size.height / 2.2,
             child: Column(
               children: [
-                orderQrCodeWidget(),
+                orderQrCodeWidget(order),
                 const SizedBox(
                   height: 15,
                 ),
@@ -478,7 +482,7 @@ class _WorkerAllOrdersPageState extends State<WorkerAllOrdersPage> {
                   width: MediaQuery.of(context).size.width / 1.1,
                   child: Center(
                       child: AutoSizeText(
-                    getText(context, "orderOwnerScanQR"),
+                    getText(context, order.isFinished!.value?"orderOwnerReopenScanQR":"orderOwnerScanQR"),
                     style: getTextStyleAbel(12, blueColor),
                     textAlign: TextAlign.center,
                   )),

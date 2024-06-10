@@ -92,9 +92,11 @@
   "cancelRequest": "Cancel Request",
   "scanQRCode": "Scan QR Code",
   "closeOrderInfo": "By Clicking on 'Close Order' you will use your Phone Camera to Scan the Code on the Worker Phone",
-  "orderOwnerScanQR": "Order Owner Needs to Scan this QR Code to Close the Order"
-
-
+  "orderOwnerScanQR": "Order Owner Needs to Scan this QR Code to Close the Order",
+  "reopenOrderInfo": "When you Click on 'Re-Open Order', You will use your Phone Camera to scan the Code on the Responsable Worker Phone",
+  "orderReopened": "Order Re-Opened",
+  "reopenOrderNow": "Re-Open Order Now",
+  "orderOwnerReopenScanQR": "Order Owner Needs to Scan this Code to Re-Open the Order"
 
 
 }

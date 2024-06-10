@@ -92,8 +92,11 @@
   "cancelRequest": "Anfrage stornieren",
   "scanQRCode": "QR-Code scannen",
   "closeOrderInfo": "Wenn Sie auf 'Bestellung schließen' klicken, verwenden Sie Ihre Handykamera, um den Code auf dem Telefon des Arbeiters zu scannen",
-  "orderOwnerScanQR": "Bestellbesitzer muss diesen QR-Code scannen, um die Bestellung zu schließen"
-
+  "orderOwnerScanQR": "Bestellbesitzer muss diesen QR-Code scannen, um die Bestellung zu schließen",
+  "reopenOrderInfo": "Wenn Sie auf 'Bestellung wieder öffnen' klicken, verwenden Sie Ihre Handykamera, um den Code auf dem Telefon des zuständigen Arbeiters zu scannen",
+  "orderReopened": "Bestellung wieder geöffnet",
+  "reopenOrderNow": "Bestellung jetzt wieder öffnen",
+  "orderOwnerReopenScanQR": "Bestellbesitzer muss diesen Code scannen, um die Bestellung wieder zu öffnen"
 
 
 } 

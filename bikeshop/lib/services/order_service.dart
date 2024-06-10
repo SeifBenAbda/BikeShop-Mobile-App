@@ -11,8 +11,6 @@ import 'package:intl/intl.dart';
 class OrderService {
   final SupabaseService _supabaseService = SupabaseService();
 
-  
-
   //--------------Send Order to Server From Client--------------------------//
 
   Future<bool> sendOrderToServer(Order order) async {
@@ -71,7 +69,7 @@ class OrderService {
           await client.from("user_order").select().eq("user_id", userId);
 
       for (var userOrder in response) {
-        Order order = createOrder(userOrder,true);
+        Order order = createOrder(userOrder, true);
         orderList.add(order);
       }
     } catch (error) {
@@ -91,7 +89,7 @@ class OrderService {
       final response =
           await client.from("user_order").select().eq("isAvailable", true);
       for (var userOrder in response) {
-        Order order = createOrder(userOrder,true);
+        Order order = createOrder(userOrder, true);
         orderList.add(order);
       }
     } catch (error) {
@@ -128,7 +126,7 @@ class OrderService {
       });
 
       for (var userOrder in response) {
-        Order order = createOrder(userOrder,false);
+        Order order = createOrder(userOrder, false);
         orderList.add(order);
       }
     } catch (error) {
@@ -146,7 +144,7 @@ class OrderService {
       final client = _supabaseService.getSuperbaseClient();
       final response = await client.rpc('get_all_orders_detailled');
       for (var userOrder in response) {
-        Order order = createOrder(userOrder,false);
+        Order order = createOrder(userOrder, false);
         int orderIndex =
             orderList.indexWhere((element) => element.orderId == order.orderId);
         if (orderIndex == -1) {
@@ -176,7 +174,7 @@ class OrderService {
       });
 
       for (var userOrder in response) {
-        Order order = createOrder(userOrder,false);
+        Order order = createOrder(userOrder, false);
         int orderIndex = workerOrders
             .indexWhere((element) => element.orderId == order.orderId);
         if (orderIndex == -1) {
@@ -235,7 +233,7 @@ class OrderService {
 
   //---------------- Creating an Order Instance fron Json Data-----------------------//
 
-  Order createOrder(dynamic userOrder,bool isClientRequest) {
+  Order createOrder(dynamic userOrder, bool isClientRequest) {
     Order order = Order(
         orderId: userOrder["order_id"].toString(),
         orderUserId: userOrder["user_id"].toString(),
@@ -267,8 +265,9 @@ class OrderService {
         orderDate:
             ValueNotifier(DateTime.parse(userOrder["order_date"].toString())),
         serviceCount: userOrder["service_count"],
-        orderOwnerName:isClientRequest?null:
-            userOrder["user_last_name"] + " " + userOrder["user_first_name"]);
+        orderOwnerName: isClientRequest
+            ? null
+            : userOrder["user_last_name"] + " " + userOrder["user_first_name"]);
 
     return order;
   }
@@ -296,7 +295,7 @@ class OrderService {
     existingOrder.isStarted =
         ValueNotifier(userOrder["is_started"].toString() == "true");
 
-   /* existingOrder.startedAt =
+    /* existingOrder.startedAt =
         userOrder["started_at"].toString().toLowerCase() == "null"
             ? null
             : DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS")
@@ -308,10 +307,9 @@ class OrderService {
 
   //--------------Worker Updating a Specific Order------------------------//
   Future<bool> updateOrderToServer(Order order) async {
-    print("Strating time : ${order.startedAt.toString()}");
     print(order.workerComments!.value.toString());
     final client = _supabaseService.getSuperbaseClient();
-    final workerId = client.auth.currentUser!.id;
+    final workerId = order.workerId; //client.auth.currentUser!.id;
     bool isFinished = order.isFinished!.value;
     bool isStarted = order.isStarted!.value;
     dynamic startedAt = order.startedAt.toString();
@@ -340,13 +338,11 @@ class OrderService {
     return true;
   }
 
-
-
   //--------------Client Updating Order Comments -----------------------------//
   Future<bool> updateClientOrderComments(Order order) async {
-     final client = _supabaseService.getSuperbaseClient();
+    final client = _supabaseService.getSuperbaseClient();
     Map<String, dynamic> orderData = {
-     "comment":order.orderComment.text,
+      "comment": order.orderComment.text,
     };
 
     // Insert the order data

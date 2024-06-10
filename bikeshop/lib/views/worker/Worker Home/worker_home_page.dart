@@ -16,7 +16,8 @@ import 'worker_open_orders.dart';
 import 'worker_tasks_day.dart';
 
 var isWorkerHomeLoading = ValueNotifier(false);
- List<Order> allOrders = [];
+List<Order> allOrders = [];
+
 class WorkerHomePage extends StatefulWidget {
   const WorkerHomePage({super.key});
 
@@ -26,7 +27,7 @@ class WorkerHomePage extends StatefulWidget {
 
 class _WorkerHomePageState extends State<WorkerHomePage> {
   bool isReady = false;
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +40,11 @@ class _WorkerHomePageState extends State<WorkerHomePage> {
               )
             : null,
         backgroundColor: bgColor,
-        body: mainWorkerWidget());
+        body: ValueListenableBuilder(
+            valueListenable: currentWorkerScreen,
+            builder: (context, value, _) {
+              return mainWorkerWidget();
+            }));
   }
 
   Widget mainWorkerWidget() {

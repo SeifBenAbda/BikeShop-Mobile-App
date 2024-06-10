@@ -5,6 +5,7 @@ import 'package:bikeshop/utils/Global%20Folder/global_func.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import '../../../models/order_class.dart';
+import '../../../services/order_service.dart';
 
 class OrderTrackingQrCode extends StatefulWidget {
   final Order order;
@@ -17,6 +18,14 @@ class OrderTrackingQrCode extends StatefulWidget {
 class _OrderTrackingQrCodeState extends State<OrderTrackingQrCode> {
   MobileScannerController cameraController = MobileScannerController();
   var isQrCodeScanPressed = ValueNotifier(false);
+
+  var isCloseOrderAction = false;
+  var isOpenOrderAction = false;
+  @override
+  void dispose() {
+    cameraController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +53,11 @@ class _OrderTrackingQrCodeState extends State<OrderTrackingQrCode> {
                   width: MediaQuery.of(context).size.width / 1.1,
                   child: Center(
                       child: AutoSizeText(
-                    getText(context, "closeOrderInfo"),
+                    getText(
+                        context,
+                        widget.order.isFinished!.value
+                            ? "reopenOrderInfo"
+                            : "closeOrderInfo"),
                     style: getTextStyleAbel(12, blueColor),
                     textAlign: TextAlign.center,
                   )),
@@ -66,7 +79,6 @@ class _OrderTrackingQrCodeState extends State<OrderTrackingQrCode> {
           shape: PrettyQrSmoothSymbol(
             color: blueColor,
           ),
-         
         ),
       ),
     );
@@ -86,7 +98,11 @@ class _OrderTrackingQrCodeState extends State<OrderTrackingQrCode> {
         width: MediaQuery.of(context).size.width / 1.1,
         child: Center(
           child: Text(
-            getText(context, "closeOrder"),
+            getText(
+                context,
+                widget.order.isFinished!.value
+                    ? "reopenOrderNow"
+                    : "closeOrder"),
             style: getTextStyleAbel(18, greyColor),
           ),
         ),
@@ -100,21 +116,83 @@ class _OrderTrackingQrCodeState extends State<OrderTrackingQrCode> {
       borderColor: Colors.white,
       bottomBarText: getText(context, "scanQRCode"),
       controller: cameraController,
-      onScan: (String value) {
-        print(value);
+      onScan: (String value)  {
+        
       },
-      onDispose: () {
+      onDispose: () async {
         print("disposed");
+
       },
-      onDetect: (BarcodeCapture barcodeCapture) {
+      onDetect: (BarcodeCapture barcodeCapture)  {
         //print(barcodeCapture);
+        /*if (isCloseOrderAction) {
+          closeOrderFn(widget.order);
+        } else if (isOpenOrderAction) {
+          openOrderFn(widget.order);
+        } else {
+          print("--------- SOME ERROR--------------------");
+        }
+        */
       },
       validator: (String value) {
-        if (value.startsWith('order_') && value.contains(widget.order.orderId.toString()) && value.endsWith('_finish')) {
+        if (closeOrderCodeValid(value)) {
+          print("closeeeeeeeeeeeeeeee now");
+          closeOrderFn(widget.order);
+          return true;
+        } else if (reopenOrderCodeValid(value)) {
+          openOrderFn(widget.order);
           return true;
         }
         return false;
       },
     );
+  }
+
+  //---close order qr code valid
+  bool closeOrderCodeValid(String value) {
+    return value.startsWith('order_') &&
+        value.contains(widget.order.orderId.toString()) &&
+        value.endsWith('_finish');
+  }
+
+  //--reopen qr code valid
+  bool reopenOrderCodeValid(String value) {
+    return value.startsWith('order_') &&
+        value.contains(widget.order.orderId.toString()) &&
+        value.endsWith('_reopen');
+  }
+
+  //--Close Order
+  void closeOrderFn(Order order) async {
+    OrderService os = OrderService();
+    await setupEndTimeOfOrder(order).then(((value) async {
+      await os.updateOrderToServer(order).then((value) {
+        showSucess(context, getText(context, "orderClosed"));
+      });
+    }));
+  }
+
+  void openOrderFn(Order order) async {
+    OrderService os = OrderService();
+    await setupReOpenTimeOfOrder(order).then(((value) async {
+      await os.updateOrderToServer(order).then((value) {
+        showSucess(context, getText(context, "orderReopened"));
+      });
+    }));
+  }
+
+  Future<void> setupEndTimeOfOrder(Order order) async {
+    DateTime? currentStartedTime = order.startedAt;
+
+    order.isFinished!.value = true;
+    order.finishedAt = DateTime.now();
+    order.startedAt = currentStartedTime;
+  }
+
+  Future<void> setupReOpenTimeOfOrder(Order order) async {
+    order.isFinished!.value = false;
+    order.isStarted!.value = true;
+    order.finishedAt = null;
+    order.startedAt = DateTime.now();
   }
 }
