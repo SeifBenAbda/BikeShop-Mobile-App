@@ -57,6 +57,7 @@ dependencies:
   pretty_qr_code: ^3.3.0
   ai_barcode_scanner: ^3.4.3
   sizer: ^2.0.15
+  syncfusion_flutter_charts: ^25.2.7
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -130,7 +131,9 @@ flutter:
     - assets/images/day.png
     - assets/images/notes.png
     - assets/images/service.png
-
+    - assets/images/out_stock.png
+    - assets/images/ready_stock.png
+  
 
     
     

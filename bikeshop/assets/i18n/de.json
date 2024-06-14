@@ -96,7 +96,18 @@
   "reopenOrderInfo": "Wenn Sie auf 'Bestellung wieder öffnen' klicken, verwenden Sie Ihre Handykamera, um den Code auf dem Telefon des zuständigen Arbeiters zu scannen",
   "orderReopened": "Bestellung wieder geöffnet",
   "reopenOrderNow": "Bestellung jetzt wieder öffnen",
-  "orderOwnerReopenScanQR": "Bestellbesitzer muss diesen Code scannen, um die Bestellung wieder zu öffnen"
+  "orderOwnerReopenScanQR": "Bestellbesitzer muss diesen Code scannen, um die Bestellung wieder zu öffnen",
+  "numberOfOrders": "Anzahl der Bestellungen",
+  "welcomeBack": "Willkommen zurück!",
+  "dashboard": "Dashboard",
+  "hireWorker": "Mitarbeiter einstellen",
+  "warehouse": "Lagerhaus",
+  "globalStats": "Globale Statistiken",
+  "completedOrders": "Abgeschlossene Bestellungen",
+  "ongoingOrders": "Laufende Bestellungen",
+  "lastOrders": "Letzte Bestellungen",
+  "seeDetails": "Details ansehen",
+  "listOfParts": "Teileliste"
 
 
 } 

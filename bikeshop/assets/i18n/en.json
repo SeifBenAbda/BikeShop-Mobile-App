@@ -96,7 +96,18 @@
   "reopenOrderInfo": "When you Click on 'Re-Open Order', You will use your Phone Camera to scan the Code on the Responsable Worker Phone",
   "orderReopened": "Order Re-Opened",
   "reopenOrderNow": "Re-Open Order Now",
-  "orderOwnerReopenScanQR": "Order Owner Needs to Scan this Code to Re-Open the Order"
+  "orderOwnerReopenScanQR": "Order Owner Needs to Scan this Code to Re-Open the Order",
+  "numberOfOrders": "Number of Orders",
+  "welcomeBack": "Welcome Back!",
+  "dashboard": "Dashboard",
+  "hireWorker": "Hire Worker",
+  "warehouse": "Warehouse",
+  "globalStats": "Global Stats",
+  "completedOrders": "Completed Orders",
+  "ongoingOrders": "On Going Orders",
+  "lastOrders": "Last Orders",
+  "seeDetails": "See Details",
+  "listOfParts": "List of Parts"
 
 
 }

@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
               return const ClientHomePage();
             } else if (!isLoadingUser.value &&
                 !myUser!.isClient &&
-                !myUser!.isClient) {
+                !myUser!.isAdmin) {
               return const WorkerHomePage();
             } else {
               return const AdminHomePage();

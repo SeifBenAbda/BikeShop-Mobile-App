@@ -178,8 +178,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
 
   Widget logoutButtonWidet() {
     return GestureDetector(
-      onTap: () {
-        controller.logout();
+      onTap: () async{
+        await controller.logout();
       },
       child: Container(
         width: MediaQuery.of(context).size.width / 1.1,
