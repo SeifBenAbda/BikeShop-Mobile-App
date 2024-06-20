@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:bikeshop/utils/Global%20Folder/global_deco.dart';
 import 'package:bikeshop/utils/Global%20Folder/global_func.dart';
+import 'package:bikeshop/views/admin/Admin%20All%20Orders/admin_orders.dart';
+import 'package:bikeshop/views/admin/Admin%20Worker%20Management/admin_worker_management.dart';
 import 'package:flutter/material.dart';
 
 import '../Admin Dashboard/admin_dashboard.dart';
@@ -81,7 +83,13 @@ class _AdminHomePageState extends State<AdminHomePage>
       case "A_D":
         return adminHomePageWidget();
       case "A_LAGER":
-        return AdminInventory(toggleDrawer: toggleDrawer,);
+        return AdminInventory(
+          toggleDrawer: toggleDrawer,
+        );
+      case "A_HIRE":
+        return AdminWorkerManagement(toggleDrawer: toggleDrawer);
+      case "A_ORDERS":
+        return AdminOrdersPage(toggleDrawer: toggleDrawer);
       default:
         return adminHomePageWidget();
     }

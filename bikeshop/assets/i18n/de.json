@@ -107,7 +107,10 @@
   "ongoingOrders": "Laufende Bestellungen",
   "lastOrders": "Letzte Bestellungen",
   "seeDetails": "Details ansehen",
-  "listOfParts": "Teileliste"
+  "listOfParts": "Teileliste",
+  "price": "Preis",
+  "updateItem": "Teil aktualisieren",
+  "workerManagement": "Mitarbeiterverwaltung"
 
 
 } 

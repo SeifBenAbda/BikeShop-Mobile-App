@@ -2,6 +2,7 @@ import 'package:bikeshop/models/lager_items_class.dart';
 import 'package:bikeshop/services/providers/items_provider.dart';
 import 'package:bikeshop/utils/Global%20Folder/glaobal_vars.dart';
 import 'package:bikeshop/views/admin/Inventory%20Management/admin_lager_inputs.dart';
+import 'package:bikeshop/views/admin/Inventory%20Management/quantity_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -115,7 +116,7 @@ class _AdminInventoryState extends State<AdminInventory> {
           const SizedBox(
             height: 10,
           ),
-          //updateItemBtn(item)
+          updateBtnWidget(item)
         ],
       ),
     );
@@ -213,7 +214,7 @@ class _AdminInventoryState extends State<AdminInventory> {
   Widget itemPriceAndQuantity(LagerItem item) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [itemPriceWidget(item)],
+      children: [itemPriceWidget(item), StockButtonWidget(item: item)],
     );
   }
 
@@ -225,18 +226,39 @@ class _AdminInventoryState extends State<AdminInventory> {
         });
       },
       child: LagerInputWidget(
-          label: "",
+          label: "${getText(context, "price")} (EURO)",
           fieldValue: "",
           isEnabled: true,
           controller: item.priceController,
-          fieldWidth: MediaQuery.of(context).size.width / 2),
+          fieldWidth: MediaQuery.of(context).size.width / 4),
+    );
+  }
+
+  //--UPDATE BUTTON FOR PRICE AND QUANTITY
+
+  Widget updateBtnWidget(LagerItem item) {
+    return GestureDetector(
+      onTap: () {
+        //update price + quantity main Function
+      },
+      child: Container(
+        decoration: getBoxDeco(5, greyColor),
+        width: MediaQuery.of(context).size.width / 1.2,
+        padding: const EdgeInsets.all(8),
+        child: Center(
+          child: Text(
+            getText(context, "updateItem"),
+            style: getTextStyleAbel(17, blueColor),
+          ),
+        ),
+      ),
     );
   }
 
   Widget drawerBtnWidget() {
     return GestureDetector(
       onTap: () {
-        widget.toggleDrawer;
+        widget.toggleDrawer();
       },
       child: Container(
         decoration: getBoxDeco(12, greyColor),

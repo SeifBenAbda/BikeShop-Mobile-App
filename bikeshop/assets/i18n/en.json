@@ -107,7 +107,10 @@
   "ongoingOrders": "On Going Orders",
   "lastOrders": "Last Orders",
   "seeDetails": "See Details",
-  "listOfParts": "List of Parts"
+  "listOfParts": "List of Parts",
+  "price": "Price",
+  "updateItem": "Update Item",
+  "workerManagement": "Worker Management"
 
 
 }
