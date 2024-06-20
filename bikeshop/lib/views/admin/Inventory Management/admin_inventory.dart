@@ -1,4 +1,4 @@
-import 'package:bikeshop/models/item_class.dart';
+import 'package:bikeshop/models/lager_items_class.dart';
 import 'package:bikeshop/services/providers/items_provider.dart';
 import 'package:bikeshop/utils/Global%20Folder/glaobal_vars.dart';
 import 'package:bikeshop/views/admin/Inventory%20Management/admin_lager_inputs.dart';
@@ -8,12 +8,9 @@ import 'package:provider/provider.dart';
 import '../../../utils/Global Folder/global_deco.dart';
 import '../../../utils/Global Folder/global_func.dart';
 
-class ActiveItem {
-  String? activeItemId;
-  ValueNotifier? isModificationMode;
+List<LagerItem> itemsListLager = [];
 
-  ActiveItem({required this.activeItemId, required this.isModificationMode});
-}
+ValueNotifier itemPriceModifId = ValueNotifier("");
 
 class AdminInventory extends StatefulWidget {
   final VoidCallback toggleDrawer;
@@ -25,9 +22,7 @@ class AdminInventory extends StatefulWidget {
 
 class _AdminInventoryState extends State<AdminInventory> {
   bool isReady = false;
-  List<Item> itemsList = [];
-  ActiveItem currentActiveItem =
-      ActiveItem(activeItemId: "", isModificationMode: ValueNotifier(false));
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -42,15 +37,15 @@ class _AdminInventoryState extends State<AdminInventory> {
           const SizedBox(
             height: 30,
           ),
-          adminInventoryMainWidget()
+          Expanded(child: adminInventoryMainWidget())
         ],
       ),
     );
   }
 
   Widget adminInventoryMainWidget() {
-    final itemsProvider = Provider.of<ItemsProvider>(context, listen: true);
-    itemsProvider.getItemsFromProvider().then((value) {
+    final itemsProvider = Provider.of<ItemsProvider>(context, listen: false);
+    itemsProvider.getLagerItems().then((value) {
       isReady = true;
     }).onError((error, stackTrace) {
       isReady = true;
@@ -75,7 +70,7 @@ class _AdminInventoryState extends State<AdminInventory> {
           const SizedBox(
             height: 10,
           ),
-          itemsConsumerWidget()
+          Expanded(child: itemsConsumerWidget())
         ],
       );
     }
@@ -83,27 +78,29 @@ class _AdminInventoryState extends State<AdminInventory> {
 
   Widget itemsConsumerWidget() {
     return Consumer<ItemsProvider>(builder: (context, itemsProvider, _) {
-      itemsList = itemsProvider.listItems;
-      if (itemsList.isEmpty) {
+      itemsListLager = itemsProvider.lagerItems;
+      if (itemsListLager.isEmpty) {
         return Container();
       }
-      return Column(
-        children: [
-          for (int i = 0; i < itemsList.length; i++)
-            Column(
-              children: [
-                itemWidget(itemsList[i]),
-                const SizedBox(
-                  height: 10,
-                )
-              ],
-            )
-        ],
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            for (int i = 0; i < itemsListLager.length; i++)
+              Column(
+                children: [
+                  itemWidget(itemsListLager[i]),
+                  const SizedBox(
+                    height: 10,
+                  )
+                ],
+              )
+          ],
+        ),
       );
     });
   }
 
-  Widget itemWidget(Item item) {
+  Widget itemWidget(LagerItem item) {
     return Container(
       decoration: getBoxDeco(12, blueColor),
       padding: const EdgeInsets.all(8),
@@ -124,9 +121,9 @@ class _AdminInventoryState extends State<AdminInventory> {
     );
   }
 
-  Widget itemImageAndNameUpdateIcon(Item item) {
+  Widget itemImageAndNameUpdateIcon(LagerItem item) {
     String itemName =
-        currentFallBackFile.value == "de" ? item.nameGerman : item.name;
+        currentFallBackFile.value == "de" ? item.nameGerman! : item.name!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -147,11 +144,11 @@ class _AdminInventoryState extends State<AdminInventory> {
     );
   }
 
-  Widget itemStockWidget(Item item) {
+  Widget itemStockWidget(LagerItem item) {
     return ValueListenableBuilder(
-        valueListenable: item.stock,
+        valueListenable: item.stock!,
         builder: (context, value, _) {
-          if (int.parse(item.stock.value.toString()) == 0) {
+          if (int.parse(item.stock!.value.toString()) == 0) {
             return Image.asset(
               "assets/images/out_stock.png",
               height: 40,
@@ -169,7 +166,7 @@ class _AdminInventoryState extends State<AdminInventory> {
                 width: 5,
               ),
               Text(
-                item.stock.value.toString(),
+                item.stock!.value.toString(),
                 style: getTextStyleAbel(20, greyColor),
               )
             ],
@@ -177,7 +174,7 @@ class _AdminInventoryState extends State<AdminInventory> {
         });
   }
 
-  Widget itemImage(Item item) {
+  Widget itemImage(LagerItem item) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: getBoxDeco(8, greyColor),
@@ -213,24 +210,27 @@ class _AdminInventoryState extends State<AdminInventory> {
   }
 
   //Item Price and Quantity
-  Widget x() {
+  Widget itemPriceAndQuantity(LagerItem item) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [itemPriceWidget()],
+      children: [itemPriceWidget(item)],
     );
   }
 
-  Widget itemPriceWidget(Item item) {
-    return ValueListenableBuilder(
-        valueListenable: currentActiveItem.isModificationMode!,
-        builder: (context, value, _) {
-          return LagerInputWidget(
-              label: "",
-              fieldValue: "",
-              isEnabled: isEnabled,
-              controller: controller,
-              fieldWidth: fieldWidth);
+  Widget itemPriceWidget(LagerItem item) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          itemPriceModifId.value = item.id;
         });
+      },
+      child: LagerInputWidget(
+          label: "",
+          fieldValue: "",
+          isEnabled: true,
+          controller: item.priceController,
+          fieldWidth: MediaQuery.of(context).size.width / 2),
+    );
   }
 
   Widget drawerBtnWidget() {

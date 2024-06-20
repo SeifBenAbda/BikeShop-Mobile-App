@@ -6,7 +6,7 @@ class LagerInputWidget extends StatefulWidget {
   final String label;
   final String fieldValue;
   final bool isEnabled;
-  final TextEditingController? controller ;
+  final TextEditingController? controller;
   final double fieldWidth;
   const LagerInputWidget(
       {super.key,
@@ -14,7 +14,8 @@ class LagerInputWidget extends StatefulWidget {
       required this.fieldValue,
       required this.isEnabled,
       required this.controller,
-      required this.fieldWidth});
+      required this.fieldWidth,
+    });
 
   @override
   State<LagerInputWidget> createState() => _LagerInputWidgetState();
@@ -30,7 +31,7 @@ class _LagerInputWidgetState extends State<LagerInputWidget> {
           height: 5,
         ),
         Container(
-          decoration: getBoxDeco(10, blueColor),
+          decoration: getBoxDeco(10, greyColor),
           //height: payementTextFieldHeight,
           width: widget.fieldWidth,
           child: Padding(
@@ -41,15 +42,15 @@ class _LagerInputWidgetState extends State<LagerInputWidget> {
               maxLines: 1,
               keyboardType: TextInputType.text,
               controller: widget.controller,
-              initialValue: widget.fieldValue,
+              //initialValue: widget.activeId==widget.itemId?null: widget.fieldValue,
               autofocus: false,
-              style: getTextStyleWhiteFjallone(15),
-              cursorColor: cursorTextFieldColor3,
+              style: getTextStyleAbel(15, blueColor),
+              cursorColor: blueColor,
               decoration: InputDecoration(
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 border: InputBorder.none,
-                hintStyle: getTextStyleWhiteFjallone(15),
+                hintStyle: getTextStyleAbel(15, blueColor),
               ),
             ),
           ),
