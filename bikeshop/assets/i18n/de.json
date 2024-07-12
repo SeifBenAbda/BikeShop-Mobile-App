@@ -110,7 +110,8 @@
   "listOfParts": "Teileliste",
   "price": "Preis",
   "updateItem": "Teil aktualisieren",
-  "workerManagement": "Mitarbeiterverwaltung"
+  "workerManagement": "Mitarbeiterverwaltung",
+  "startedWorkOn": "Begonnen am"
 
 
 } 

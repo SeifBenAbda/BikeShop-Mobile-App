@@ -67,6 +67,7 @@ class _DrawerAdminState extends State<DrawerAdmin> {
     return GestureDetector(
       onTap: () {
         changeAdminScreen(adminNavOption.optionQuickAcess!);
+        widget.toggleDrawer();
       },
       child: Align(
         alignment: Alignment.centerLeft,
@@ -99,7 +100,7 @@ class _DrawerAdminState extends State<DrawerAdmin> {
 
   Widget logoutBtnWidget() {
     return GestureDetector(
-      onTap: () async{
+      onTap: () async {
         await controller.logout();
       },
       child: Align(

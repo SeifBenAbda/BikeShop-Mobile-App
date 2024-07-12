@@ -110,7 +110,8 @@
   "listOfParts": "List of Parts",
   "price": "Price",
   "updateItem": "Update Item",
-  "workerManagement": "Worker Management"
+  "workerManagement": "Worker Management",
+  "startedWorkOn": "Started Work On"
 
 
 }

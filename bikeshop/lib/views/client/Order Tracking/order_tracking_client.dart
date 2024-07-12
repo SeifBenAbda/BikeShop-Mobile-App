@@ -25,7 +25,8 @@ class _OrderTrackingClientState extends State<OrderTrackingClient> {
   double orderContainerHeight = 210;
   List<Order> ordersList = [];
   bool isReady = false;
-  var currentOrderSlected;
+
+  dynamic currentOrderSlected;
 
 
   

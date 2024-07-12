@@ -66,7 +66,7 @@ class _AdminHomePageState extends State<AdminHomePage>
               ..setEntry(0, 3, 200 * val)
               ..rotateY((pi / 6) * val),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(value == 0 ?0:24),
               child: Scaffold(
                   body: ValueListenableBuilder(
                       valueListenable: currentAdminScreen,

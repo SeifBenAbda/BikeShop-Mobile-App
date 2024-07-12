@@ -164,7 +164,7 @@ class OrderService {
   }
 
   //------------------ get All Worker Tasks (With Services) From Database --------------------//
-  List<Order> workerOrders = allOrdersWorker;
+  List<Order> workerOrders = [];
   Future<List<Order>> getWorkerAllOrdersWithServices() async {
     try {
       final client = _supabaseService.getSuperbaseClient();

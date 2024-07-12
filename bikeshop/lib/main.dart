@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:bikeshop/services/providers/admin_provider.dart';
 import 'package:bikeshop/services/providers/items_provider.dart';
 import 'package:bikeshop/services/providers/shopServices_provider.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,9 @@ void main() async {
     ),
     ChangeNotifierProvider<ItemsProvider>(
       create: (context) => ItemsProvider(),
+    ),
+    ChangeNotifierProvider<AdminProvider>(
+      create: (context) => AdminProvider(),
     ),
   ], child: const MyApp()));
 }

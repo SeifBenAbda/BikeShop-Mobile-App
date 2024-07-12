@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
   ValueNotifier isReady = ValueNotifier(false);
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //home main function
     homeMainFunction();
